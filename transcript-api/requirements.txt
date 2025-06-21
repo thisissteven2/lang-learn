@@ -1,0 +1,4 @@
+Flask==3.0.3
+youtube_transcript_api
+yt_dlp
+flask_cors
