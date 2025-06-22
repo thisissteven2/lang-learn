@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import OpenAI from "openai";
 
 const openrouterClient = new OpenAI({
 	apiKey: process.env.NEXT_PUBLIC_OPENROUTER_API_KEY,
 	baseURL: "https://openrouter.ai/api/v1",
+	dangerouslyAllowBrowser: true,
 });
 
 const languageMap = {
@@ -104,8 +106,8 @@ const jsonFormatMap = {
 
 export async function analyzeText(lang: keyof typeof languageMap, text: string) {
 	const completion = await openrouterClient.chat.completions.create({
-		model: "anthropic/claude-3.5-sonnet-20240620",
-		max_tokens: 1800,
+		model: "deepseek/deepseek-chat-v3-0324:free",
+		max_tokens: 4096,
 		messages: [
 			{
 				role: "user",
@@ -128,7 +130,8 @@ export async function analyzeText(lang: keyof typeof languageMap, text: string) 
    - sentence (a simple sentence using the word in ${languageMap[lang]})})
    - sentence_translation (English translation of that sentence)
 
-3. Return only the result in this JSON format, no extra explanation:
+3. Return only the result as **pure JSON**, without markdown or code blocks.
+4. Use the following JSON format:
 
 ${jsonFormatMap[lang]}
 
@@ -140,3 +143,109 @@ ${text}`,
 
 	return completion.choices[0].message?.content || "{}";
 }
+
+export async function analyzeTextBatch(
+	lang: keyof typeof languageMap,
+	segments: { start: string; end: string; text: string }[]
+) {
+	const batchedText = segments.map(({ start, end, text }) => `[${start} - ${end}]\n${text.trim()}\n`).join("\n");
+
+	const completion = await openrouterClient.chat.completions.create({
+		model: "deepseek/deepseek-chat-v3-0324:free",
+		max_tokens: 60000,
+		messages: [
+			{
+				role: "user",
+				content: `Please analyze the following ${languageMap[lang]} text, grouped by timestamp.
+
+1. For each timestamp range, extract and return vocabulary grouped by part of speech:
+   - nouns
+   - verbs
+   - adjectives
+   - adverbs
+   - pronouns
+   - particles
+   - conjunctions
+
+2. For each word, include:
+   - word
+   - translation (to English)
+   - difficulty (1–5)
+   - base (for verbs/adjectives)
+   - sentence (a simple example in ${languageMap[lang]})
+   - sentence_translation (English translation)
+
+3. Return result as **pure JSON**, using this structure:
+{
+  "[start - end]": {
+    nouns: [...],
+    verbs: [...],
+    ...
+  }
+}
+
+4. Use this as format reference:
+
+${jsonFormatMap[lang]}
+
+Segments:
+${batchedText}`,
+			},
+		],
+	});
+
+	const raw = completion.choices[0].message?.content || "";
+	const jsonText = extractJSON(raw);
+
+	return JSON.parse(jsonText);
+}
+
+function extractJSON(text: string): string {
+	if (!text) return "{}";
+	const firstBrace = text.indexOf("{");
+	const lastBrace = text.lastIndexOf("}");
+
+	if (firstBrace === -1 || lastBrace === -1 || firstBrace > lastBrace) {
+		throw new Error("Could not find JSON braces");
+	}
+
+	return text.slice(firstBrace, lastBrace + 1).trim();
+}
+
+export async function processTranscript(
+	lang: keyof typeof languageMap,
+	transcript: { start: string; end: string; text: string }[],
+	batchSize = 30
+) {
+	const finalResult: Record<string, any> = {};
+
+	for (let i = 0; i < transcript.length; i += batchSize) {
+		const batch = transcript.slice(i, i + batchSize);
+		try {
+			const result = await analyzeTextBatch(lang, batch);
+			console.log(`Processed batch ${i}-${i + batchSize}`, result);
+			Object.assign(finalResult, result);
+		} catch (err) {
+			console.error(`Error in batch ${i}-${i + batchSize}`, err);
+		}
+	}
+
+	return finalResult;
+}
+
+// Sample usage:
+// const chunks = [
+// 	{
+// 		start: "00:00:14",
+// 		end: "00:00:16",
+// 		text: "哈喽，大家好",
+// 	},
+// 	{
+// 		start: "00:00:16",
+// 		end: "00:00:17",
+// 		text: "好久不见",
+// 	},
+// ];
+
+// const vocabAnalysis = await processTranscript("zh", chunks);
+// console.log(JSON.stringify(vocabAnalysis, null, 2));

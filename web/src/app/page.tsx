@@ -15,6 +15,11 @@ export default function HomePage() {
 						<Button className="w-full mt-4">Fetch Transcript</Button>
 					</Link>
 				)}
+				{isDev && (
+					<Link href="/fetch-ollama">
+						<Button className="w-full mt-4">Fetch Ollama</Button>
+					</Link>
+				)}
 				<Link href="/transcripts">
 					<Button className="w-full mt-4" variant="secondary">
 						View Saved Transcripts
