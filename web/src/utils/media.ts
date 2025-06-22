@@ -28,12 +28,97 @@ const BASE_FILTERS = {
 	sortBy: "date",
 };
 
+export interface Playlist {
+	lang_G: string;
+	title: string;
+	title_translation: TitleTranslation;
+	diocoPlaylistId: string;
+	description?: string;
+	description_translation?: DescriptionTranslation;
+	image_small?: ImageSmall;
+	image_big?: ImageBig;
+	count: number;
+	satisfiesFiltersCount: number;
+	type: string;
+}
+
+export interface TitleTranslation {
+	translation: string;
+	destLang_G: string;
+}
+
+export interface DescriptionTranslation {
+	translation: string;
+	destLang_G: string;
+}
+
+export interface ImageSmall {
+	type: string;
+	src: string;
+}
+
+export interface ImageBig {
+	type: string;
+	src: string;
+}
+
+export interface Data {
+	docs_metadata: DocsMetadaum[];
+}
+
+export interface DocsMetadaum {
+	mediaClass: string;
+	source: string;
+	diocoDocName: string;
+	diocoDocName_translation: DiocoDocNameTranslation;
+	diocoDocId: string;
+	lang_G: string;
+	description: string;
+	description_translation: any;
+	image: Image;
+	publishDate: PublishDate;
+	freqRank95: number;
+	freq95Bucket: number;
+	popularityScore: number;
+	info: Info;
+	duration_ms: number;
+	durationBucket_ms: number;
+	subsAvailable: SubsAvailable;
+}
+
+export interface DiocoDocNameTranslation {
+	translation: string;
+	destLang_G: string;
+}
+
+export interface Image {
+	type: string;
+	src: string;
+}
+
+export interface PublishDate {
+	type: string;
+	timestamp_unixms: number;
+}
+
+export interface Info {
+	videoId: string;
+	viewCount: number;
+	channelId: string;
+	channelName: string;
+}
+
+export interface SubsAvailable {
+	YT: boolean;
+	DIOCO_ASR: boolean;
+}
+
 export async function fetchMediaPlaylists({
 	freq95 = { min: 0, max: 100000 },
 	searchText = "",
 	sortBy = "date",
 	duration = { min: null, max: null },
-}: FetchMediaParams): Promise<any> {
+}: FetchMediaParams): Promise<{ data: Playlist[] }> {
 	const payload = {
 		auth: null,
 		translationLang_G: "en",
@@ -68,7 +153,7 @@ export async function fetchMediaDocs({
 	sortBy = "date",
 	duration = { min: null, max: null },
 	forceIncludeDiocoDocId = null,
-}: FetchMediaDocsParams): Promise<any> {
+}: FetchMediaDocsParams): Promise<{ data: Data }> {
 	const payload = {
 		auth: null,
 		translationLang_G: "en",
