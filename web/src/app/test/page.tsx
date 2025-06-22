@@ -1,35 +1,28 @@
 "use client";
 import { Card, Title, Text, Button } from "@tremor/react";
 import { getYoutubeSubsData, getYoutubeSubsTranslations, getFullDict, getDictTTS, getHoverDict } from "@/utils/cdn";
-import { useState } from "react";
 import { SubtitleTabs } from "./components/example";
+import { useQuery } from "@tanstack/react-query";
 
+// chinese: 5x178RFs-xw
+// japanese: iC8v6Y87vik
+// korean: rZUfAQn1icM
+// spanish: NHD9_zCNEtM
 export default function Page() {
-	const [mockJson, setMockJson] = useState(null);
+	const videoId = "NHD9_zCNEtM";
+
+	const { data: subsData, isLoading: isSubsDataLoading } = useQuery({
+		queryKey: ["subsData", videoId],
+		queryFn: () => getYoutubeSubsData(videoId),
+	});
+
+	const { data: subsTranslations, isLoading: isSubsTranslationsLoading } = useQuery({
+		queryKey: ["subsTranslations", videoId],
+		queryFn: () => getYoutubeSubsTranslations(videoId),
+	});
+
 	const handleFetch = async () => {
 		try {
-			// 1. Get YouTube subtitles
-			const subsData = await getYoutubeSubsData("5x178RFs-xw");
-			// const data = {
-			// 	...subsData,
-			// 	data: {
-			// 		sourceSubs: {
-			// 			...subsData.data.sourceSubs,
-			// 			data: {
-			// 				...subsData.data.sourceSubs.data,
-			// 				nlp: subsData.data.sourceSubs.data.nlp.slice(0, 2),
-			// 				subs: subsData.data.sourceSubs.data.subs.slice(0, 2),
-			// 			},
-			// 		},
-			// 	},
-			// };
-			console.log("YouTube Subs Data:", subsData);
-			setMockJson(subsData);
-
-			// 2. Get YouTube subtitle translations
-			const subsTranslations = await getYoutubeSubsTranslations("5x178RFs-xw", "en");
-			console.log("YouTube Subs Translations:", subsTranslations);
-
 			// 3. Get full dictionary entry
 			const fullDict = await getFullDict({
 				form: "空调",
@@ -72,7 +65,12 @@ export default function Page() {
 				Test Api Call
 			</Button>
 
-			<SubtitleTabs mockJson={mockJson} />
+			<SubtitleTabs
+				videoId={videoId}
+				subsData={subsData}
+				subsTranslations={subsTranslations?.data}
+				isLoading={isSubsDataLoading && isSubsTranslationsLoading}
+			/>
 		</Card>
 	);
 }

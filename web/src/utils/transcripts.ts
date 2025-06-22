@@ -1,4 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+export function parseTimeString(time: string) {
+	const [h, m, s] = time.split(":").map(Number);
+	return h * 3600 + m * 60 + s;
+}
+
 export function getYouTubeVideoId(url: string): string | null {
 	try {
 		const parsedUrl = new URL(url);

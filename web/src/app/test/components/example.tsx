@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
 	Tab,
 	TabGroup,
@@ -18,6 +18,8 @@ import {
 } from "@tremor/react";
 import { useParsedSubsData } from "./hook";
 import { cx } from "@/lib/utils";
+import ReactPlayer from "react-player";
+import { SubtitleScroller } from "./subtitle-scroller";
 
 export const posColorMap: Record<string, string> = {
 	NOUN: "text-blue-500",
@@ -71,12 +73,50 @@ function getFreqRangeLabel(freq: number | null | undefined, ranges: any[]): stri
 	return range ? range.label : "unknown";
 }
 
-export function SubtitleTabs({ mockJson }: { mockJson: any }) {
-	const { ranges, categorizedGroups, subtitles, haveWordFrequency } = useParsedSubsData(mockJson);
+export function getTransliteration(token: any): string {
+	// Try pinyin (array of strings)
+	if (Array.isArray(token.form?.pinyin)) {
+		return token.form.pinyin.join(" ");
+	}
+
+	// Try translit as array or string (form)
+	if (token.form?.translit) {
+		return Array.isArray(token.form.translit) ? token.form.translit.join(" ") : token.form.translit;
+	}
+
+	// Try form_norm.translit
+	if (token.form_norm?.translit) {
+		return Array.isArray(token.form_norm.translit) ? token.form_norm.translit.join(" ") : token.form_norm.translit;
+	}
+
+	// Try lemma.translit
+	if (token.lemma?.translit) {
+		return Array.isArray(token.lemma.translit) ? token.lemma.translit.join(" ") : token.lemma.translit;
+	}
+
+	return "";
+}
+
+export function SubtitleTabs({
+	subsData,
+	subsTranslations,
+	isLoading,
+	videoId,
+}: {
+	subsData: any;
+	subsTranslations: string[];
+	isLoading: boolean;
+	videoId: string;
+}) {
+	const { ranges, categorizedGroups, subtitles, haveWordFrequency } = useParsedSubsData(subsData);
 	const [colorBy, setColorBy] = useState<"none" | "pos" | "freq">("pos");
 	const [colorMode, setColorMode] = useState<"text" | "underline">("text");
+	const [audioOnly, setAudioOnly] = useState<boolean>(false);
 	const [showPinyin, setShowPinyin] = useState<boolean>(true);
 	const [showTranslation, setShowTranslation] = useState<boolean>(false);
+
+	const [playing, setPlaying] = useState(false);
+	const playerRef = useRef<ReactPlayer>(null);
 
 	const useUnderline = colorMode === "underline";
 
@@ -88,13 +128,17 @@ export function SubtitleTabs({ mockJson }: { mockJson: any }) {
 		});
 	}, [categorizedGroups]);
 
+	// Track video time and duration
+	const [currentTime, setCurrentTime] = useState(0);
+	const [duration, setDuration] = useState(1); // prevent 0 for duration
+
 	return (
 		<Card className="max-w-4xl mx-auto mt-6">
 			<Title>Subtitle Viewer</Title>
 
 			<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 mt-2">
 				{/* Left side: Color mode */}
-				<div className="flex flex-wrap gap-4 items-center">
+				<div className="flex flex-wrap gap-2 items-center">
 					<Text className="shrink-0">Color by:</Text>
 					<Select
 						value={colorBy}
@@ -109,6 +153,11 @@ export function SubtitleTabs({ mockJson }: { mockJson: any }) {
 
 				{/* Right side: Extra config toggles */}
 				<div className="flex flex-wrap md:grid md:grid-cols-2 gap-4 items-center">
+					<div className="flex items-center gap-2">
+						<Text>Audio Only</Text>
+						<Switch checked={audioOnly} onChange={(v) => setAudioOnly(v)} />
+					</div>
+
 					<div className="flex items-center gap-2">
 						<Text>Underline</Text>
 						<Switch checked={colorMode === "underline"} onChange={(v) => setColorMode(v ? "underline" : "text")} />
@@ -126,6 +175,23 @@ export function SubtitleTabs({ mockJson }: { mockJson: any }) {
 				</div>
 			</div>
 
+			<div className="aspect-video w-1/2 sm:rounded-none sm:px-0">
+				<ReactPlayer
+					ref={playerRef}
+					url={`https://www.youtube.com/watch?v=${videoId}`}
+					playing={playing}
+					width="100%"
+					height="100%"
+					onProgress={({ playedSeconds }) => setCurrentTime(playedSeconds)}
+					onDuration={(d) => setDuration(d)}
+					onPlay={() => setPlaying(true)}
+					onPause={() => setPlaying(false)}
+					controls
+				/>
+			</div>
+
+			<SubtitleScroller subtitles={subtitles} duration={duration} currentTime={currentTime} playing={playing} />
+
 			<TabGroup>
 				<TabList>
 					<Tab>Transcripts</Tab>
@@ -135,19 +201,28 @@ export function SubtitleTabs({ mockJson }: { mockJson: any }) {
 				<TabPanels>
 					{/* Transcripts */}
 					<TabPanel>
-						<div className="max-h-80 overflow-y-auto mt-4 space-y-4">
+						<div className="max-h-80 overflow-y-auto mt-4 space-y-4 pr-4">
 							{subtitles.map((sub, i) => (
 								<div key={i}>
-									<Button variant="light" className="text-sm">
+									<Button
+										onClick={() => {
+											const wasPlaying = playing;
+
+											playerRef.current?.seekTo(sub.begin / 1000, "seconds");
+
+											if (wasPlaying) {
+												setPlaying(true);
+											}
+										}}
+										variant="light"
+										className="text-sm"
+									>
 										{formatTime(sub.begin)}
 									</Button>
 
 									{/* Tokens */}
-									<div className="text-lg flex flex-wrap gap-2">
+									<div className="text-lg flex flex-wrap gap-1">
 										{sub.tokens.map((token: any, j: number) => {
-											if (token.form.text == "大厨") {
-												console.log(token);
-											}
 											const key = colorBy === "pos" ? token.pos : getFreqRangeLabel(token.freq, ranges) ?? "unknown";
 											const colorClass = getColorClass(
 												key,
@@ -155,11 +230,11 @@ export function SubtitleTabs({ mockJson }: { mockJson: any }) {
 												colorBy === "pos" ? posColorMap : freqColorMap
 											);
 
+											const transliteration = getTransliteration(token);
+
 											return (
 												<div key={j} className="flex flex-col items-center">
-													{showPinyin && (
-														<span className="text-xs text-gray-500">{token.form.pinyin?.join(" ") || ""}</span>
-													)}
+													{showPinyin && <span className="text-xs text-gray-500">{transliteration}</span>}
 													<span className={cx(colorClass, colorBy === "none" && "text-gray-700")}>
 														{token.form.text}
 													</span>
@@ -169,17 +244,16 @@ export function SubtitleTabs({ mockJson }: { mockJson: any }) {
 									</div>
 
 									{/* Dummy Translation */}
-									{showTranslation && (
-										<Text className="text-sm text-gray-400 italic mt-1">(Dummy translation of: {sub.text})</Text>
-									)}
+									{showTranslation && <Text className="text-sm text-gray-400 italic mt-1">{subsTranslations[i]}</Text>}
 								</div>
 							))}
 						</div>
+						{isLoading && <Text className="mt-4">Transcripts will show here.</Text>}
 					</TabPanel>
 
 					{/* Words */}
 					<TabPanel>
-						<div className="max-h-96 overflow-y-auto mt-4 space-y-4">
+						<div className="max-h-96 overflow-y-auto mt-4 space-y-4 pr-4">
 							{memoizedCategorizedGroups.map(([range, tokens]) => (
 								<div key={range}>
 									<Title className="text-base">{range}</Title>
@@ -192,11 +266,11 @@ export function SubtitleTabs({ mockJson }: { mockJson: any }) {
 												colorBy === "pos" ? posColorMap : freqColorMap
 											);
 
+											const transliteration = getTransliteration(token);
+
 											return (
 												<div key={idx} className="py-1 flex flex-col items-center">
-													{showPinyin && (
-														<span className="text-xs text-gray-500">{token.form.pinyin?.join(" ") || ""}</span>
-													)}
+													{showPinyin && <span className="text-xs text-gray-500">{transliteration}</span>}
 													<span
 														key={idx}
 														className={cx("px-2 rounded", colorClass, colorBy === "none" && "text-gray-700")}
@@ -210,7 +284,8 @@ export function SubtitleTabs({ mockJson }: { mockJson: any }) {
 								</div>
 							))}
 						</div>
-						<Text className="mt-4">Have Word Frequency: {haveWordFrequency ? "Yes" : "No"}</Text>
+						{isLoading && <Text className="mt-4">Vocabularies categorized by levels will show here.</Text>}
+						{!isLoading && !haveWordFrequency && <Text className="mt-4">Vocabularies not available.</Text>}
 					</TabPanel>
 				</TabPanels>
 			</TabGroup>
