@@ -10,21 +10,21 @@ export default function Page() {
 		try {
 			// 1. Get YouTube subtitles
 			const subsData = await getYoutubeSubsData("5x178RFs-xw");
-			const data = {
-				...subsData,
-				data: {
-					sourceSubs: {
-						...subsData.data.sourceSubs,
-						data: {
-							...subsData.data.sourceSubs.data,
-							nlp: subsData.data.sourceSubs.data.nlp.slice(0, 2),
-							subs: subsData.data.sourceSubs.data.subs.slice(0, 2),
-						},
-					},
-				},
-			};
-			console.log("YouTube Subs Data:", data);
-			setMockJson(data);
+			// const data = {
+			// 	...subsData,
+			// 	data: {
+			// 		sourceSubs: {
+			// 			...subsData.data.sourceSubs,
+			// 			data: {
+			// 				...subsData.data.sourceSubs.data,
+			// 				nlp: subsData.data.sourceSubs.data.nlp.slice(0, 2),
+			// 				subs: subsData.data.sourceSubs.data.subs.slice(0, 2),
+			// 			},
+			// 		},
+			// 	},
+			// };
+			console.log("YouTube Subs Data:", subsData);
+			setMockJson(subsData);
 
 			// 2. Get YouTube subtitle translations
 			const subsTranslations = await getYoutubeSubsTranslations("5x178RFs-xw", "en");
