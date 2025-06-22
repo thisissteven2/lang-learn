@@ -14,11 +14,13 @@ interface FetchMediaParams {
 	searchText?: string;
 	sortBy?: string;
 	duration?: DurationRange;
+	lang_G?: string;
 }
 
 interface FetchMediaDocsParams extends FetchMediaParams {
 	diocoPlaylistId: string;
 	forceIncludeDiocoDocId?: string | null;
+	lang_G?: string;
 }
 
 const BASE_FILTERS = {
@@ -118,12 +120,13 @@ export async function fetchMediaPlaylists({
 	searchText = "",
 	sortBy = "date",
 	duration = { min: null, max: null },
-}: FetchMediaParams): Promise<{ data: Playlist[] }> {
+	lang_G = "es",
+}: FetchMediaParams): Promise<{ data: { playlists: Playlist[] } }> {
 	const payload = {
 		auth: null,
 		translationLang_G: "en",
 		freq95,
-		lang_G: "es",
+		lang_G,
 		filters: {
 			...BASE_FILTERS,
 			searchText,
@@ -153,12 +156,13 @@ export async function fetchMediaDocs({
 	sortBy = "date",
 	duration = { min: null, max: null },
 	forceIncludeDiocoDocId = null,
+	lang_G = "es",
 }: FetchMediaDocsParams): Promise<{ data: Data }> {
 	const payload = {
 		auth: null,
 		translationLang_G: "en",
 		freq95,
-		lang_G: "es",
+		lang_G,
 		filters: {
 			...BASE_FILTERS,
 			searchText,
