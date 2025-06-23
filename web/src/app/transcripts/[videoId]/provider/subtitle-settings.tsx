@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { usePersistedState } from "@/hooks/usePersistedState";
 import { getYoutubeSubsData, getYoutubeSubsTranslations } from "@/utils/cdn";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 
 type ColorBy = "none" | "pos" | "freq";
 type ColorMode = "text" | "underline";
@@ -30,11 +31,11 @@ interface SubtitleSettingsContextType {
 const SubtitleSettingsContext = createContext<SubtitleSettingsContextType | undefined>(undefined);
 
 export const SubtitleSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-	const [colorBy, setColorBy] = useState<ColorBy>("pos");
-	const [colorMode, setColorMode] = useState<ColorMode>("text");
-	const [audioOnly, setAudioOnly] = useState<boolean>(false);
-	const [showPinyin, setShowPinyin] = useState<boolean>(true);
-	const [showTranslation, setShowTranslation] = useState<boolean>(false);
+	const [colorBy, setColorBy] = usePersistedState<ColorBy>("colorBy", "pos");
+	const [colorMode, setColorMode] = usePersistedState<ColorMode>("colorMode", "text");
+	const [audioOnly, setAudioOnly] = usePersistedState<boolean>("audioOnly", false);
+	const [showPinyin, setShowPinyin] = usePersistedState<boolean>("showPinyin", true);
+	const [showTranslation, setShowTranslation] = usePersistedState<boolean>("showTranslation", false);
 
 	const { videoId } = useParams();
 	const searchParams = useSearchParams();

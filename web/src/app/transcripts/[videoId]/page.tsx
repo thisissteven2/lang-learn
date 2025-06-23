@@ -25,19 +25,6 @@ function TranscriptComponent() {
 
 	const { videoId } = useSubtitleSettings();
 
-	const onTimestampClick = useCallback(
-		(timestamp: number) => {
-			const wasPlaying = playing;
-
-			playerRef.current?.seekTo(timestamp / 1000, "seconds");
-
-			if (wasPlaying || wasPlaying == null) {
-				setPlaying(true);
-			}
-		},
-		[playing]
-	);
-
 	const getCurrentTime = useCallback(() => {
 		if (!playerRef.current) return null;
 		const seconds = playerRef.current.getCurrentTime();
@@ -97,7 +84,18 @@ function TranscriptComponent() {
 					height: `calc(100vh - ${window?.innerWidth < 768 ? 20 : 48}px)`,
 				}}
 			>
-				<SubtitleTabs getCurrentTime={getCurrentTime} onTimestampClick={onTimestampClick} />
+				<SubtitleTabs
+					getCurrentTime={getCurrentTime}
+					onTimestampClick={(timestamp: number) => {
+						const wasPlaying = playing;
+
+						playerRef.current?.seekTo(timestamp / 1000, "seconds");
+
+						if (wasPlaying || wasPlaying == null) {
+							setPlaying(true);
+						}
+					}}
+				/>
 			</Card>
 
 			{/* Mobile-only: Subtitle Panel */}
@@ -107,7 +105,18 @@ function TranscriptComponent() {
 					height: "calc(100vh - 56.25vw)", // 16:9 video aspect ratio: 9/16 = 0.5625
 				}}
 			>
-				<SubtitleTabs getCurrentTime={getCurrentTime} onTimestampClick={onTimestampClick} />
+				<SubtitleTabs
+					getCurrentTime={getCurrentTime}
+					onTimestampClick={(timestamp: number) => {
+						const wasPlaying = playing;
+
+						playerRef.current?.seekTo(timestamp / 1000, "seconds");
+
+						if (wasPlaying || wasPlaying == null) {
+							setPlaying(true);
+						}
+					}}
+				/>
 			</div>
 		</div>
 	);

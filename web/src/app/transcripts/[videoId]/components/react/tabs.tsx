@@ -98,7 +98,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 								key={i}
 								ref={i === activeIndex ? activeRef : null}
 								className={`subtitle p-2 rounded cursor-pointer transition-colors ${
-									i === activeIndex ? "bg-blue-50" : "hover:bg-gray-100"
+									i === activeIndex ? "bg-blue-50 dark:bg-blue-800/30" : "hover:bg-gray-100 dark:hover:bg-gray-800/40"
 								}`}
 							>
 								<Button onClick={() => onTimestampClick(sub.begin)} variant="light" className="text-sm">
@@ -106,7 +106,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 								</Button>
 
 								{/* Tokens */}
-								<div className="text-lg flex flex-wrap gap-1">
+								<div className="text-xl flex flex-wrap gap-1">
 									{sub.tokens.map((token: any, j: number) => {
 										const key = colorBy === "pos" ? token.pos : getFreqRangeLabel(token.freq, ranges) ?? "unknown";
 										const colorClass = getColorClass(key, useUnderline, colorBy === "pos" ? posColorMap : freqColorMap);
@@ -115,7 +115,9 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 
 										return (
 											<div key={j} className="flex flex-col items-center">
-												{showPinyin && <span className="text-xs text-gray-500">{transliteration}</span>}
+												{showPinyin && (
+													<span className="text-xs text-gray-500 dark:text-gray-300">{transliteration}</span>
+												)}
 												<span className={cx(colorClass, colorBy === "none" && "text-gray-700")}>{token.form.text}</span>
 											</div>
 										);
@@ -123,7 +125,9 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 								</div>
 
 								{/* Translation */}
-								{showTranslation && <Text className="text-sm text-gray-400 italic mt-1">{subsTranslations[i]}</Text>}
+								{showTranslation && subsTranslations && (
+									<Text className="text-sm text-gray-400 dark:text-gray-400 italic mt-1">{subsTranslations[i]}</Text>
+								)}
 							</div>
 						))}
 					</div>
@@ -136,7 +140,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 						{memoizedCategorizedGroups.map(([range, tokens]) => (
 							<div key={range}>
 								<Title className="text-base">{range}</Title>
-								<div className="flex flex-wrap gap-2 mt-2 text-lg">
+								<div className="flex flex-wrap gap-2 mt-2 text-xl">
 									{tokens.map((token, idx) => {
 										const key = colorBy === "pos" ? token.pos : range;
 										const colorClass = getColorClass(key, useUnderline, colorBy === "pos" ? posColorMap : freqColorMap);
@@ -145,7 +149,9 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 
 										return (
 											<div key={idx} className="py-1 flex flex-col items-center">
-												{showPinyin && <span className="text-xs text-gray-500">{transliteration}</span>}
+												{showPinyin && (
+													<span className="text-xs text-gray-500 dark:text-gray-300">{transliteration}</span>
+												)}
 												<span
 													key={idx}
 													className={cx("px-2 rounded", colorClass, colorBy === "none" && "text-gray-700")}

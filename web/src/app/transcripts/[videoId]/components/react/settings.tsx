@@ -3,15 +3,6 @@
 import { Card, Text, Title, Switch, Select, SelectItem } from "@tremor/react";
 import { useSubtitleSettings } from "../../provider/subtitle-settings";
 
-// const handleExport = (data: any, videoId: string, lang: string) => {
-// 	if (!data) return;
-// 	const file = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-// 	const a = document.createElement("a");
-// 	a.href = URL.createObjectURL(file);
-// 	a.download = `${videoId}-${lang}.json`;
-// 	a.click();
-// };
-
 export function SubtitleSettings() {
 	const {
 		colorBy,
@@ -68,12 +59,6 @@ export function SubtitleSettings() {
 					</div>
 				</div>
 			</div>
-			{/* 
-			<div className="flex justify-end gap-4">
-				<Button className="mt-3" onClick={() => handleExport(dataToExport, videoId, lang)}>
-					Export Transcript
-				</Button>
-			</div> */}
 		</Card>
 	);
 }
