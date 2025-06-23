@@ -22,6 +22,8 @@ export function useYouTubeHistory() {
 
 	const updateHistory = useCallback(
 		async (videoId: string, lang: string, lastTimestamp: number) => {
+			if (typeof window === "undefined") return;
+
 			// Prefetch metadata or use cache if available
 			const metadata = await queryClient.fetchQuery({
 				queryKey: ["ytMetadata", videoId],
@@ -60,6 +62,8 @@ export function useYouTubeHistory() {
 	);
 
 	const getHistory = useCallback((): WatchHistoryEntry[] => {
+		if (typeof window === "undefined") return [];
+
 		const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
 		return raw ? JSON.parse(raw) : [];
 	}, []);
