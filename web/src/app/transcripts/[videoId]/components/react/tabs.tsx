@@ -37,7 +37,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 	const subtitleWrapperRef = useRef<HTMLDivElement>(null);
 	const activeRef = useRef<HTMLDivElement>(null);
 
-	const { subsData, subsTranslations, isLoading, colorBy, colorMode, showPinyin, showTranslation } =
+	const { subsData, subsTranslations, isLoading, isError, colorBy, colorMode, showPinyin, showTranslation } =
 		useSubtitleSettings();
 
 	const searchParams = useSearchParams();
@@ -173,6 +173,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 						))}
 					</div>
 					{isLoading && <Text>Transcripts will show here.</Text>}
+					{isError && <Text className="text-red-500">Failed to fetch transcripts.</Text>}
 				</TabPanel>
 
 				{/* Words */}
@@ -220,6 +221,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 						))}
 					</div>
 					{isLoading && <Text>Vocabularies categorized by levels will show here.</Text>}
+					{isError && <Text className="text-red-500">Failed to fetch vocabularies.</Text>}
 				</TabPanel>
 			</TabPanels>
 		</TabGroup>

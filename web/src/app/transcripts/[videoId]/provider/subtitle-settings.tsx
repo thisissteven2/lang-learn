@@ -26,6 +26,7 @@ interface SubtitleSettingsContextType {
 	subsData: any;
 	subsTranslations: any;
 	isLoading: boolean;
+	isError: boolean;
 }
 
 const SubtitleSettingsContext = createContext<SubtitleSettingsContextType | undefined>(undefined);
@@ -41,13 +42,21 @@ export const SubtitleSettingsProvider: React.FC<{ children: React.ReactNode }> =
 	const searchParams = useSearchParams();
 	const lang = searchParams.get("lang") ?? "es";
 
-	const { data: subsData, isLoading: isSubsDataLoading } = useQuery({
+	const {
+		data: subsData,
+		isLoading: isSubsDataLoading,
+		isError: isSubsDataError,
+	} = useQuery({
 		queryKey: ["subsData", videoId],
 		queryFn: () => getYoutubeSubsData(videoId as string),
 		enabled: typeof videoId === "string" && !!videoId,
 	});
 
-	const { data: subsTranslations, isLoading: isSubsTranslationsLoading } = useQuery({
+	const {
+		data: subsTranslations,
+		isLoading: isSubsTranslationsLoading,
+		isError: isSubsTranslationsError,
+	} = useQuery({
 		queryKey: ["subsTranslations", videoId],
 		queryFn: () => getYoutubeSubsTranslations(videoId as string),
 		enabled: typeof videoId === "string" && !!videoId,
@@ -70,6 +79,7 @@ export const SubtitleSettingsProvider: React.FC<{ children: React.ReactNode }> =
 				lang,
 				subsData,
 				subsTranslations: subsTranslations?.data,
+				isError: isSubsDataError || isSubsTranslationsError,
 				isLoading: isSubsDataLoading && isSubsTranslationsLoading,
 			}}
 		>
