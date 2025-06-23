@@ -75,8 +75,6 @@ function TranscriptComponent() {
 		[setDrawerOpen]
 	);
 
-	console.log("render");
-
 	return (
 		<ReactPlayerContext.Provider
 			value={{
@@ -103,6 +101,7 @@ function TranscriptComponent() {
 							onReady={() => {
 								if (lastWatched) {
 									playerRef?.current?.seekTo(lastWatched);
+									setPlaying(true);
 								}
 							}}
 							onPlay={() => {
