@@ -12,7 +12,6 @@ import {
 	RiContrastLine,
 	RiSearchLine,
 	RiErrorWarningLine,
-	// RiLoader4Line is a spinner icon
 	RiLoader4Line,
 } from "@remixicon/react";
 
@@ -52,7 +51,7 @@ function extractYouTubeVideoId(url: string): string | null {
 }
 
 export default function HomePage() {
-	const [lang, setLang] = useState("en");
+	const [lang, setLang] = useState("");
 	const [url, setUrl] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
@@ -113,6 +112,7 @@ export default function HomePage() {
 				</Select>
 
 				<TextInput
+					disabled={!lang}
 					icon={RiSearchLine}
 					placeholder="Paste YouTube link here"
 					value={url}
@@ -134,6 +134,10 @@ export default function HomePage() {
 					iconPosition="right"
 				>
 					{loading ? "Loading..." : "▶️ Watch Video"}
+				</Button>
+
+				<Button variant="secondary" className="w-full" onClick={() => router.push("/history")}>
+					🕘 Watch History
 				</Button>
 			</Card>
 		</main>

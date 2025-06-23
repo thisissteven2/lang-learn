@@ -7,8 +7,7 @@ import { DocsMetadaum, fetchMediaDocs, fetchMediaPlaylists } from "@/utils/media
 import Image from "next/image";
 import Link from "next/link";
 import { usePersistedState } from "@/hooks/usePersistedState";
-
-const LANGUAGES = ["es", "zh-CN", "zh-TW", "ja", "ko"];
+import { LANGUAGES } from "./[videoId]/components/constants";
 
 const YoutubeCard = ({ doc }: { doc: DocsMetadaum }) => {
 	const [error, setError] = useState(false);

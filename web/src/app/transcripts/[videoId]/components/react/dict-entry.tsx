@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, Title, Text, Button, Divider } from "@tremor/react";
 import { Drawer } from "vaul";
 import { useDictEntry } from "../../provider/dict-entry";
@@ -9,8 +9,81 @@ import { RiVolumeUpLine, RiCloseLine } from "@remixicon/react";
 import { getSentenceTransliteration } from "../../components/utils";
 import { posReadableMap } from "../../components/constants";
 import { WordStatusButtons } from "../../components/react/word-status-buttons";
+import { useSubtitleSettings } from "../../provider/subtitle-settings";
+import { useParsedSubsData } from "../hook";
+import { formatTime } from "@/utils/transcripts";
+import { useReactPlayer } from "../../provider/react-player";
 
-export function DictEntry({ lang }: { lang: string }) {
+function SentencesExamples({ word }: { word: string }) {
+	const { subsData, subsTranslations } = useSubtitleSettings();
+	const { subtitles } = useParsedSubsData(subsData);
+
+	const sentencesExamplesFromSubtitles = useMemo(() => {
+		const examples = [];
+		for (let i = 0; i < subtitles.length; i++) {
+			const subtitle = subtitles[i];
+			if (examples.length === 3) break;
+			if (subtitle.text.includes(word) && examples.length < 3) {
+				examples.push({
+					index: i,
+					...subtitle,
+				});
+			}
+		}
+		return examples;
+	}, [subtitles, word]);
+
+	const { onTimestampClick } = useReactPlayer();
+
+	if (sentencesExamplesFromSubtitles.length === 0) {
+		return null;
+	}
+
+	return (
+		<>
+			<div className="mt-4">
+				<Text className="text-xs text-gray-500 uppercase tracking-wide mb-2">Examples from Subtitles</Text>
+
+				<div>
+					{sentencesExamplesFromSubtitles.map((sentence, index) => {
+						const transliteration = sentence.tokens.map(getSentenceTransliteration).join(" ").trim();
+						const sentenceChunks = sentence.text
+							.split(word)
+							.flatMap((chunk, i, arr) => (i < arr.length - 1 ? [chunk, word] : [chunk]));
+
+						return (
+							<Card
+								key={index}
+								className="bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
+							>
+								<Button onClick={() => onTimestampClick(sentence.begin)} variant="light" className="text-sm">
+									{formatTime(sentence.begin)}
+								</Button>
+								<div className="flex justify-between items-center">
+									<Text className="text-black dark:text-white text-xl">
+										{sentenceChunks.map((text, index) => {
+											const isActive = text === word;
+											return (
+												<span key={index} className={isActive ? "text-yellow-600 dark:text-yellow-500" : ""}>
+													{text}
+												</span>
+											);
+										})}
+									</Text>
+								</div>
+								<Text className="text-gray-500 dark:text-gray-400 italic">{transliteration}</Text>
+								<Text className="text-blue-800 dark:text-blue-400 mt-2">{subsTranslations[sentence.index]}</Text>
+							</Card>
+						);
+					})}
+				</div>
+			</div>
+			<Divider />
+		</>
+	);
+}
+
+export function DictEntry({ lang, withExamplesFromSubtitles }: { lang: string; withExamplesFromSubtitles?: boolean }) {
 	const { drawerOpen, setDrawerOpen, setSentenceParams, isLoading, audio, sentenceAudio, dictEntry, token } =
 		useDictEntry();
 	const { play } = useAudioPlayer(audio);
@@ -79,6 +152,8 @@ export function DictEntry({ lang }: { lang: string }) {
 								/>
 
 								<Divider />
+
+								{withExamplesFromSubtitles && <SentencesExamples word={word} />}
 
 								{/* Example Sentences */}
 								<div className="mt-4">

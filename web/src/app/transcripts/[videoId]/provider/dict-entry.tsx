@@ -3,11 +3,11 @@
 
 import { DictEntry, getDictTTS, getFullDict, getSentenceTTS } from "@/utils/cdn";
 import { useQuery } from "@tanstack/react-query";
-import { createContext, useContext, useState } from "react";
+import { createContext, SetStateAction, useContext, useState } from "react";
 
 interface DictEntryContextType {
 	drawerOpen: boolean;
-	setDrawerOpen: (value: boolean) => void;
+	setDrawerOpen: React.Dispatch<SetStateAction<boolean>>;
 	token: string;
 	setToken: (value: string) => void;
 	setDictParams: (value: string) => void;

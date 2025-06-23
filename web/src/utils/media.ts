@@ -186,3 +186,35 @@ export async function fetchMediaDocs({
 
 	return response.json();
 }
+
+export interface YTMetadata {
+	title: string;
+	author_name: string;
+	author_url: string;
+	type: string;
+	height: number;
+	width: number;
+	version: string;
+	provider_name: string;
+	provider_url: string;
+	thumbnail_height: number;
+	thumbnail_width: number;
+	thumbnail_url: string;
+	html: string;
+}
+
+export async function fetchYTMetadata(videoId: string): Promise<YTMetadata> {
+	const response = await fetch(
+		`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
+		{
+			method: "GET",
+			headers: { "Content-Type": "application/json" },
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error(`Failed to fetch youtube video metadata: ${response.statusText}`);
+	}
+
+	return response.json();
+}

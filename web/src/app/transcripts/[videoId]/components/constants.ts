@@ -49,3 +49,5 @@ export const freqColorMap: Record<string, string> = {
 	"5001-8000": "text-purple-500",
 	"8001+": "text-purple-700",
 };
+
+export const LANGUAGES = ["es", "zh-CN", "zh-TW", "ja", "ko"];
