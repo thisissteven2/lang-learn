@@ -16,6 +16,7 @@ interface DictEntryContextType {
 	dictEntry?: DictEntry;
 	audio?: string;
 	sentenceAudio?: string;
+	lang: string;
 }
 
 const DictEntryContext = createContext<DictEntryContextType | undefined>(undefined);
@@ -76,6 +77,7 @@ export const DictEntryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 				setToken,
 				setSentenceParams,
 				sentenceAudio,
+				lang,
 			}}
 		>
 			{children}

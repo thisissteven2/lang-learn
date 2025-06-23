@@ -14,6 +14,7 @@ import { cx } from "@/lib/utils"; // Or just use clsx directly
 import { RiVolumeUpLine, RiCloseLine } from "@remixicon/react";
 import { getSentenceTransliteration } from "./components/utils";
 import { posReadableMap } from "./components/constants";
+import { WordStatusButtons } from "./components/react/word-status-buttons";
 
 export default function TranscriptPage() {
 	return (
@@ -27,7 +28,7 @@ export default function TranscriptPage() {
 }
 
 function DrawerComponent() {
-	const { drawerOpen, setDrawerOpen, setSentenceParams, isLoading, audio, sentenceAudio, dictEntry, token } =
+	const { drawerOpen, setDrawerOpen, setSentenceParams, isLoading, audio, sentenceAudio, dictEntry, token, lang } =
 		useDictEntry();
 	const { play } = useAudioPlayer(audio);
 	const { play: playSentence } = useAudioPlayer(sentenceAudio);
@@ -85,14 +86,11 @@ function DrawerComponent() {
 									))}
 								</div>
 
-								<div className="flex items-center mt-2 gap-2">
-									<Button size="xs" variant="secondary">
-										★ Known
-									</Button>
-									<Button size="xs" variant="secondary">
-										🧠 Learning
-									</Button>
-								</div>
+								<WordStatusButtons
+									word={word}
+									pos={dictEntry?.renderData?.fullDictRenderData?.entries?.[0]?.posGroups?.[0].pos || "X"}
+									lang={lang}
+								/>
 
 								<Divider />
 
@@ -125,7 +123,7 @@ function DrawerComponent() {
 																			return (
 																				<span
 																					key={index}
-																					className={isActive ? "text-yellow-200 dark:text-yellow-500" : ""}
+																					className={isActive ? "text-yellow-600 dark:text-yellow-500" : ""}
 																				>
 																					{token.form.text}
 																				</span>
