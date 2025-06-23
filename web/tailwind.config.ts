@@ -10,6 +10,9 @@ const config: Config = {
 		"./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
 	],
 	darkMode: "class", // Enable dark mode support
+	future: {
+		hoverOnlyWhenSupported: true,
+	},
 	theme: {
 		transparent: "transparent",
 		current: "currentColor",

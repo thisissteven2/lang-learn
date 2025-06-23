@@ -1,18 +1,149 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import { Card, Title, Text } from "@tremor/react";
+import { useCallback, useRef, useState, useEffect } from "react";
+import { Card, Title, Text, Button, Divider } from "@tremor/react";
 import ReactPlayer from "react-player/youtube";
 import { SubtitleSettings } from "./components/react/settings";
 import { SubtitleSettingsProvider, useSubtitleSettings } from "./provider/subtitle-settings";
 import { SubtitleTabs } from "./components/react/tabs";
+import { Drawer } from "vaul";
+import { DictEntryProvider, useDictEntry } from "./provider/dict-entry";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { cx } from "@/lib/utils"; // Or just use clsx directly
+import { RiVolumeUpLine, RiCloseLine } from "@remixicon/react";
 
 export default function TranscriptPage() {
 	return (
-		<SubtitleSettingsProvider>
-			<TranscriptComponent />
-		</SubtitleSettingsProvider>
+		<DictEntryProvider>
+			<DrawerComponent />
+			<SubtitleSettingsProvider>
+				<TranscriptComponent />
+			</SubtitleSettingsProvider>
+		</DictEntryProvider>
+	);
+}
+
+function DrawerComponent() {
+	const { drawerOpen, setDrawerOpen, setSentenceParams, isLoading, audio, sentenceAudio, dictEntry, token } =
+		useDictEntry();
+	const { play } = useAudioPlayer(audio);
+	const { play: playSentence } = useAudioPlayer(sentenceAudio);
+
+	const [isDesktop, setIsDesktop] = useState(false);
+
+	useEffect(() => {
+		const handleResize = () => setIsDesktop(window.innerWidth > 768);
+		handleResize();
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
+
+	const [word, transliteration] = token.split(",");
+
+	return (
+		<Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen} direction={isDesktop ? "right" : "bottom"}>
+			<Drawer.Portal>
+				<Drawer.Overlay className="fixed inset-0 bg-black/40 z-30" />
+				<Drawer.Content
+					className={cx(
+						"bg-white dark:bg-[#030712] fixed z-40 shadow-lg rounded-none sm:h-full sm:w-[28rem] max-h-[100vh] w-full transition-transform",
+						isDesktop ? "right-0 top-0 bottom-0" : "bottom-0 left-0 right-0"
+					)}
+				>
+					<div className="overflow-y-auto p-4 h-full max-h-[100vh]">
+						{/* Header */}
+						<div className="flex justify-between items-start mb-4">
+							<Drawer.Title asChild>
+								<div className="flex justify-between items-end gap-4">
+									<div className="flex flex-col items-center w-fit">
+										<Text className="text-sm text-green-600 dark:text-green-400 italic">{transliteration}</Text>
+										<Title className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{word}</Title>
+									</div>
+									<Button icon={RiVolumeUpLine} variant="light" size="xl" onClick={play} className="mb-1" />
+								</div>
+							</Drawer.Title>
+							<button
+								onClick={() => setDrawerOpen(false)}
+								className="p-2 text-gray-600 hover:text-black dark:hover:text-white"
+							>
+								<RiCloseLine />
+							</button>
+						</div>
+
+						{/* Definitions */}
+						{!isLoading && (
+							<>
+								<div className="mb-4 space-y-2">
+									{dictEntry?.renderData?.fullDictRenderData?.entries?.[0]?.posGroups.map((group, idx) => (
+										<div key={idx}>
+											<Text className="text-sm text-gray-500 italic">{group.pos ? `(${group.pos})` : ""}</Text>
+											<Text className="text-sm text-black dark:text-white">{group.translations.join(", ")}</Text>
+										</div>
+									))}
+								</div>
+
+								<div className="flex items-center mt-2 gap-2">
+									<Button size="xs" variant="secondary">
+										★ Known
+									</Button>
+									<Button size="xs" variant="secondary">
+										🧠 Learning
+									</Button>
+								</div>
+
+								<Divider />
+
+								{/* Example Sentences */}
+								<div className="mt-4">
+									<Text className="text-xs text-gray-500 uppercase tracking-wide mb-2">Examples by Part of Speech</Text>
+
+									{dictEntry?.tatoebaExamples &&
+										Object.entries(dictEntry.tatoebaExamples).map(([pos, examples]) => (
+											<div key={pos} className="mb-4">
+												<Text className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">{pos}</Text>
+
+												{examples.map((example: any, index: number) => {
+													const pinyin = example.nlp
+														.map((token: any) => token.form?.pinyin?.join("") ?? "")
+														.join(" ")
+														.trim();
+
+													const sentenceParams = `${example.text},${example.textHash}`;
+
+													return (
+														<Card
+															key={index}
+															className="bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
+														>
+															<div className="flex justify-between items-center">
+																<Text className="text-black dark:text-white text-xl">{example.text}</Text>
+																<Button
+																	variant="light"
+																	className="text-gray-500 hover:text-blue-600"
+																	onClick={() => {
+																		setSentenceParams(sentenceParams);
+																		playSentence();
+																	}}
+																>
+																	<RiVolumeUpLine className="w-6 h-6" />
+																</Button>
+															</div>
+															<Text className="text-gray-500 italic">{pinyin}</Text>
+															<Text className="text-blue-800 dark:text-blue-400 mt-2">{example.translation?.text}</Text>
+															<Text className="text-xs text-gray-500 mt-1">Frequency Rank: {example.avgFreqRank}</Text>
+														</Card>
+													);
+												})}
+											</div>
+										))}
+								</div>
+							</>
+						)}
+					</div>
+				</Drawer.Content>
+			</Drawer.Portal>
+		</Drawer.Root>
 	);
 }
 

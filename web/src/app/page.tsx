@@ -14,8 +14,8 @@ function ThemeToggle() {
 	const { theme, setTheme } = useTheme();
 
 	return (
-		<Flex alignItems="center" className="w-fit">
-			<Select defaultValue={theme} onValueChange={(value) => setTheme(value)}>
+		<Flex alignItems="center" justifyContent="end" className="w-full">
+			<Select className="w-fit" defaultValue={theme} onValueChange={(value) => setTheme(value)}>
 				<SelectItem value="light" icon={RiSunLine}>
 					Light
 				</SelectItem>
@@ -45,9 +45,14 @@ export default function HomePage() {
 						<Button className="w-full mt-4">Fetch Ollama</Button>
 					</Link>
 				)}
+				<Link href="/saved">
+					<Button className="w-full mt-4" variant="secondary">
+						View Saved
+					</Button>
+				</Link>
 				<Link href="/transcripts">
 					<Button className="w-full mt-4" variant="secondary">
-						View Saved Transcripts
+						Videos
 					</Button>
 				</Link>
 				<ThemeToggle />
