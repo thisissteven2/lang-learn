@@ -57,7 +57,7 @@ export default function Page() {
 	);
 }
 
-export function PageContent() {
+function PageContent() {
 	const [data, setData] = useState<Record<string, WordStatusData[]>>({ known: [], learning: [] });
 	const [posFilter, setPosFilter] = usePersistedState("posFilter", "ALL");
 	const [langFilter, setLangFilter] = usePersistedState("langFilter", "ALL");
