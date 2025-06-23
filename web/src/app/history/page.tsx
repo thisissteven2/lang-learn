@@ -8,6 +8,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 
+function formatTime(seconds: number): string {
+	const h = Math.floor(seconds / 3600);
+	const m = Math.floor((seconds % 3600) / 60);
+	const s = Math.floor(seconds % 60);
+
+	const pad = (num: number) => String(num).padStart(2, "0");
+
+	if (h > 0) {
+		return `${h}:${pad(m)}:${pad(s)}`;
+	} else {
+		return `${m}:${pad(s)}`;
+	}
+}
+
 export default function Page() {
 	const [lang, setLang] = usePersistedState("lang", "zh-CN");
 
@@ -57,10 +71,14 @@ export default function Page() {
 												width={480}
 												height={480}
 											/>
+											<span className="absolute bottom-1 right-1 inline-flex items-center rounded-md bg-gray-800/80 px-2 py-1 text-xs font-medium text-gray-100 ring-inset">
+												{formatTime(metadata.maxTimestamp - metadata.lastTimestamp)}
+											</span>
 										</div>
-										<div className="h-2 w-full bg-gray-300 dark:bg-gray-700">
+
+										<div className="h-1 w-full bg-gray-300 dark:bg-gray-700">
 											<div
-												className="text-red-500 dark:text-red-500"
+												className="bg-red-500 dark:bg-red-500 h-full"
 												style={{
 													width: `${(metadata.lastTimestamp / metadata.maxTimestamp) * 100}%`,
 												}}
