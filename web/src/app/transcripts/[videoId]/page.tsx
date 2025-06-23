@@ -94,6 +94,7 @@ function TranscriptComponent() {
 				}}
 			>
 				<SubtitleTabs
+					setPlaying={setPlaying}
 					getCurrentTime={getCurrentTime}
 					onTimestampClick={(timestamp: number) => {
 						const wasPlaying = playing;
@@ -115,6 +116,7 @@ function TranscriptComponent() {
 				}}
 			>
 				<SubtitleTabs
+					setPlaying={setPlaying}
 					getCurrentTime={getCurrentTime}
 					onTimestampClick={(timestamp: number) => {
 						const wasPlaying = playing;

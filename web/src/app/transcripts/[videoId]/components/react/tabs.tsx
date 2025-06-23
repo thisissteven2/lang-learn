@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 type SubtitleTabsProps = {
 	getCurrentTime: () => number | null;
 	onTimestampClick: (timestamp: number) => void;
+	setPlaying: (playing: boolean) => void;
 };
 
 function OpenDictEntry({
@@ -32,7 +33,7 @@ function OpenDictEntry({
 		</>
 	);
 }
-export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsProps) {
+export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: SubtitleTabsProps) {
 	const subtitleWrapperRef = useRef<HTMLDivElement>(null);
 	const activeRef = useRef<HTMLDivElement>(null);
 
@@ -143,6 +144,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 												{(update) => (
 													<div
 														onClick={() => {
+															setPlaying(false);
 															update(
 																`${token.form.text},${token.pos},${lang}`,
 																`${token.form.text},${transliteration}`
@@ -190,9 +192,13 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 											<OpenDictEntry key={idx}>
 												{(update) => (
 													<div
-														onClick={() =>
-															update(`${token.form.text},${token.pos},${lang}`, `${token.form.text},${transliteration}`)
-														}
+														onClick={() => {
+															setPlaying(false);
+															update(
+																`${token.form.text},${token.pos},${lang}`,
+																`${token.form.text},${transliteration}`
+															);
+														}}
 														className="py-1 flex flex-col items-center cursor-pointer"
 													>
 														{showPinyin && (

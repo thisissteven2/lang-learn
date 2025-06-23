@@ -58,7 +58,9 @@ export function DictEntry({ lang }: { lang: string }) {
 						</div>
 
 						{/* Definitions */}
-						{!isLoading && (
+						{isLoading ? (
+							"Loading..."
+						) : (
 							<>
 								<div className="mb-4 space-y-2">
 									{dictEntry?.renderData?.fullDictRenderData?.entries?.[0]?.posGroups.map((group, idx) => (

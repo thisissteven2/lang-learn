@@ -88,10 +88,10 @@ function PageContent() {
 		<div className="sm:p-4">
 			<DictEntry lang={lang === "ALL" ? "" : lang} />
 
-			<Card className="max-w-6xl max-sm:rounded-none max-sm:p-4 mx-auto h-dvh sm:min-h-[calc(100vh-32px)]">
+			<Card className="max-w-6xl max-sm:rounded-none max-sm:p-4 mx-auto min-h-dvh sm:min-h-[calc(100vh-32px)]">
 				<Title>📚 Word Review</Title>
 
-				<div className="flex flex-wrap gap-4 mt-4">
+				<div className="flex flex-wrap gap-4 mt-4 mb-2">
 					<div>
 						<Text className="text-sm font-medium mb-1">Filter by POS</Text>
 						<Select value={posFilter} onValueChange={setPosFilter} className="w-40">
