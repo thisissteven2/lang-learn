@@ -18,6 +18,26 @@ export const posColorMap: Record<string, string> = {
 	PUNCT: "text-gray-500", // punctuation
 };
 
+export const posReadableMap: Record<string, string> = {
+	NOUN: "Noun",
+	VERB: "Verb",
+	ADJ: "Adjective",
+	ADV: "Adverb",
+	PRON: "Pronoun",
+	PROPN: "Proper Noun",
+	NUM: "Numeral",
+	ADP: "Adposition", // includes prepositions and postpositions
+	PART: "Particle",
+	CCONJ: "Coordinating Conjunction",
+	SCONJ: "Subordinating Conjunction",
+	DET: "Determiner",
+	AUX: "Auxiliary Verb",
+	INTJ: "Interjection",
+	SYM: "Symbol",
+	X: "Unknown",
+	PUNCT: "Punctuation",
+};
+
 export const freqColorMap: Record<string, string> = {
 	"1-100": "text-red-600",
 	"101-200": "text-orange-600",

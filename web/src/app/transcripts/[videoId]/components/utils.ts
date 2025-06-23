@@ -43,6 +43,23 @@ export function getFreqRangeLabel(freq: number | null | undefined, ranges: any[]
 	return range ? range.label : "unknown";
 }
 
+export function getSentenceTransliteration(token: any): string {
+	// Try .form.pinyin (joined without spaces, as in your example)
+	if (Array.isArray(token.form?.pinyin)) {
+		return token.form.pinyin.join("");
+	}
+
+	// Fallback to translit in various places
+	const translitSources = [token.form?.translit, token.form_norm?.translit, token.lemma?.translit];
+
+	for (const source of translitSources) {
+		if (Array.isArray(source)) return source.join(" ");
+		if (typeof source === "string") return source;
+	}
+
+	return "";
+}
+
 export function getTransliteration(token: any): string {
 	// Try pinyin (array of strings)
 	if (Array.isArray(token.form?.pinyin)) {

@@ -86,8 +86,10 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 
 			if (!seconds) return;
 
+			const OFFSET = 0.3;
+
 			const activeIndex = memoizedSubtitles.findIndex((subtitle) => {
-				return seconds >= subtitle.start && seconds < subtitle.end;
+				return seconds + OFFSET >= subtitle.start && seconds + OFFSET < subtitle.end;
 			});
 
 			if (activeIndex != -1) {

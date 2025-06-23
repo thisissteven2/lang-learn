@@ -12,6 +12,8 @@ import { DictEntryProvider, useDictEntry } from "./provider/dict-entry";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { cx } from "@/lib/utils"; // Or just use clsx directly
 import { RiVolumeUpLine, RiCloseLine } from "@remixicon/react";
+import { getSentenceTransliteration } from "./components/utils";
+import { posReadableMap } from "./components/constants";
 
 export default function TranscriptPage() {
 	return (
@@ -98,45 +100,61 @@ function DrawerComponent() {
 								<div className="mt-4">
 									<Text className="text-xs text-gray-500 uppercase tracking-wide mb-2">Examples by Part of Speech</Text>
 
-									{dictEntry?.tatoebaExamples &&
-										Object.entries(dictEntry.tatoebaExamples).map(([pos, examples]) => (
-											<div key={pos} className="mb-4">
-												<Text className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">{pos}</Text>
+									{!dictEntry?.tatoebaExamples
+										? "No Examples found."
+										: Object.entries(dictEntry.tatoebaExamples).map(([pos, examples]) => (
+												<div key={pos} className="mb-4">
+													<Text className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">
+														{posReadableMap[pos]}
+													</Text>
 
-												{examples.map((example: any, index: number) => {
-													const pinyin = example.nlp
-														.map((token: any) => token.form?.pinyin?.join("") ?? "")
-														.join(" ")
-														.trim();
+													{examples.map((example: any, index: number) => {
+														const transliteration = example.nlp.map(getSentenceTransliteration).join(" ").trim();
 
-													const sentenceParams = `${example.text},${example.textHash}`;
+														const sentenceParams = `${example.text},${example.textHash}`;
 
-													return (
-														<Card
-															key={index}
-															className="bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
-														>
-															<div className="flex justify-between items-center">
-																<Text className="text-black dark:text-white text-xl">{example.text}</Text>
-																<Button
-																	variant="light"
-																	className="text-gray-500 hover:text-blue-600"
-																	onClick={() => {
-																		setSentenceParams(sentenceParams);
-																		playSentence();
-																	}}
-																>
-																	<RiVolumeUpLine className="w-6 h-6" />
-																</Button>
-															</div>
-															<Text className="text-gray-500 italic">{pinyin}</Text>
-															<Text className="text-blue-800 dark:text-blue-400 mt-2">{example.translation?.text}</Text>
-															<Text className="text-xs text-gray-500 mt-1">Frequency Rank: {example.avgFreqRank}</Text>
-														</Card>
-													);
-												})}
-											</div>
-										))}
+														return (
+															<Card
+																key={index}
+																className="bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
+															>
+																<div className="flex justify-between items-center">
+																	<Text className="text-black dark:text-white text-xl">
+																		{example.nlp.map((token: any, index: number) => {
+																			const isActive = token.form.text === word;
+																			return (
+																				<span
+																					key={index}
+																					className={isActive ? "text-yellow-200 dark:text-yellow-500" : ""}
+																				>
+																					{token.form.text}
+																				</span>
+																			);
+																		})}
+																	</Text>
+																	<Button
+																		variant="light"
+																		className="text-gray-500 hover:text-blue-600"
+																		onClick={() => {
+																			setSentenceParams(sentenceParams);
+																			playSentence();
+																		}}
+																	>
+																		<RiVolumeUpLine className="w-6 h-6" />
+																	</Button>
+																</div>
+																<Text className="text-gray-500 dark:text-gray-400 italic">{transliteration}</Text>
+																<Text className="text-blue-800 dark:text-blue-400 mt-2">
+																	{example.translation?.text}
+																</Text>
+																<Text className="text-xs text-gray-500 mt-1">
+																	Frequency Rank: {example.avgFreqRank}
+																</Text>
+															</Card>
+														);
+													})}
+												</div>
+										  ))}
 								</div>
 							</>
 						)}
