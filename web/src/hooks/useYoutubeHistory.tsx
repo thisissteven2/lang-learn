@@ -15,13 +15,14 @@ export interface WatchHistoryEntry {
 	author_url: string;
 	thumbnail_url: string;
 	lastTimestamp: number;
+	maxTimestamp: number;
 }
 
 export function useYouTubeHistory() {
 	const queryClient = useQueryClient();
 
 	const updateHistory = useCallback(
-		async (videoId: string, lang: string, lastTimestamp: number) => {
+		async (videoId: string, lang: string, lastTimestamp: number, maxTimestamp: number) => {
 			if (typeof window === "undefined") return;
 
 			// Prefetch metadata or use cache if available
@@ -38,6 +39,7 @@ export function useYouTubeHistory() {
 				author_url: metadata.author_url,
 				thumbnail_url: metadata.thumbnail_url,
 				lastTimestamp,
+				maxTimestamp,
 			};
 
 			// Read existing history

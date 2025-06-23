@@ -122,7 +122,7 @@ function TranscriptComponent() {
 							}}
 							onPause={() => setPlaying(false)}
 							onProgress={async ({ playedSeconds }) => {
-								await updateHistory(videoId, lang, playedSeconds);
+								await updateHistory(videoId, lang, playedSeconds, playerRef.current?.getDuration() as number);
 								// 	setCurrentTime(playedSeconds);
 							}}
 						/>

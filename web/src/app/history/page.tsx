@@ -58,6 +58,14 @@ export default function Page() {
 												height={480}
 											/>
 										</div>
+										<div className="h-2 w-full bg-gray-300 dark:bg-gray-700">
+											<div
+												className="text-red-500 dark:text-red-500"
+												style={{
+													width: `${(metadata.lastTimestamp / metadata.maxTimestamp) * 100}%`,
+												}}
+											></div>
+										</div>
 										<div className="p-3">
 											<Title className="text-base line-clamp-2">{metadata.title}</Title>
 											<Text className="text-sm text-gray-500 mt-1">{metadata.author_name}</Text>
