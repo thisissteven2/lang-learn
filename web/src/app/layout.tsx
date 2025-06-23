@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Lexend_Deca } from "next/font/google";
 import "@/styles/globals.css";
 import { QueryProvider } from "./providers";
@@ -12,6 +12,12 @@ const lexend = Lexend_Deca({
 export const metadata: Metadata = {
 	title: "LangLearn",
 	description: "Learn languages through youtube transcripts",
+};
+
+export const viewport: Viewport = {
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 1,
 };
 
 export default function RootLayout({
