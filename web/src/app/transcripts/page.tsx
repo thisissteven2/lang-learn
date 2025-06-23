@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePersistedState } from "@/hooks/usePersistedState";
 
-const LANGUAGES = ["es", "zh-CN", "ja", "ko"];
+const LANGUAGES = ["es", "zh-CN", "zh-TW", "ja", "ko"];
 
 const YoutubeCard = ({ doc }: { doc: DocsMetadaum }) => {
 	const [error, setError] = useState(false);

@@ -47,7 +47,7 @@ const POS_OPTIONS = [
 	"PUNCT",
 ];
 
-const LANG_OPTIONS = ["ALL", "zh-CN", "es", "ja", "ko"];
+const LANG_OPTIONS = ["ALL", "zh-CN", "zh-TW", "es", "ja", "ko"];
 
 export default function Page() {
 	return (
