@@ -47,12 +47,12 @@ export default function HomePage() {
 				)}
 				<Link href="/saved">
 					<Button className="w-full mt-4" variant="secondary">
-						View Saved
+						📚 Word Review
 					</Button>
 				</Link>
 				<Link href="/transcripts">
 					<Button className="w-full mt-4" variant="secondary">
-						Videos
+						🎥 Videos
 					</Button>
 				</Link>
 				<ThemeToggle />

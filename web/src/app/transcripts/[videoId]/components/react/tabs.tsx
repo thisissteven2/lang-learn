@@ -9,6 +9,7 @@ import { JSX, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useSubtitleSettings } from "../../provider/subtitle-settings";
 import { useParsedSubsData } from "../hook";
 import { useDictEntry } from "../../provider/dict-entry";
+import { useSearchParams } from "next/navigation";
 
 type SubtitleTabsProps = {
 	getCurrentTime: () => number | null;
@@ -37,6 +38,9 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 
 	const { subsData, subsTranslations, isLoading, colorBy, colorMode, showPinyin, showTranslation } =
 		useSubtitleSettings();
+
+	const searchParams = useSearchParams();
+	const lang = searchParams.get("lang") ?? "es";
 
 	const useUnderline = colorMode === "underline";
 
@@ -139,7 +143,10 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 												{(update) => (
 													<div
 														onClick={() => {
-															update(`${token.form.text},${token.pos}`, `${token.form.text},${transliteration}`);
+															update(
+																`${token.form.text},${token.pos},${lang}`,
+																`${token.form.text},${transliteration}`
+															);
 														}}
 														className="flex flex-col items-center"
 													>
@@ -184,7 +191,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick }: SubtitleTabsP
 												{(update) => (
 													<div
 														onClick={() =>
-															update(`${token.form.text},${token.pos}`, `${token.form.text},${transliteration}`)
+															update(`${token.form.text},${token.pos},${lang}`, `${token.form.text},${transliteration}`)
 														}
 														className="py-1 flex flex-col items-center cursor-pointer"
 													>

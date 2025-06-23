@@ -79,7 +79,7 @@ export default function Page() {
 	return (
 		<div className="pb-6 max-w-6xl mx-auto space-y-4">
 			<div className="sticky top-0 pt-3 space-y-3 px-4 sm:pt-6 sm:px-6 sm:space-y-4 z-10 bg-white dark:bg-[#030712]">
-				<Title>Available Transcripts</Title>
+				<Title>🎥 Videos</Title>
 
 				<div className="space-y-2">
 					<Text className="mb-2">Channel / Playlist</Text>

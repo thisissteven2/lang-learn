@@ -10,11 +10,12 @@ export interface WordStatusData {
 	word: string;
 	pos: string;
 	lang: string;
+	transliteration: string;
 }
 
 interface WordStatusButtonsProps extends WordStatusData {}
 
-export function WordStatusButtons({ word, pos, lang }: WordStatusButtonsProps) {
+export function WordStatusButtons({ word, pos, lang, transliteration }: WordStatusButtonsProps) {
 	const [status, setStatus] = useState<Status | null>(null);
 
 	const LOCAL_KEY = "wordStatus";
@@ -36,13 +37,14 @@ export function WordStatusButtons({ word, pos, lang }: WordStatusButtonsProps) {
 		const data = localStorage.getItem(LOCAL_KEY);
 		const parsed: Record<Status, WordStatusData[]> = data ? JSON.parse(data) : { known: [], learning: [] };
 
-		// Remove from both categories first to prevent duplicates
+		// Remove existing entries to prevent duplicates
 		parsed.known = parsed.known.filter((entry) => entry.word !== word || entry.pos !== pos || entry.lang !== lang);
 		parsed.learning = parsed.learning.filter(
 			(entry) => entry.word !== word || entry.pos !== pos || entry.lang !== lang
 		);
 
-		parsed[newStatus].push({ word, pos, lang });
+		// Add the new entry
+		parsed[newStatus].push({ word, pos, lang, transliteration });
 
 		localStorage.setItem(LOCAL_KEY, JSON.stringify(parsed));
 		setStatus(newStatus);

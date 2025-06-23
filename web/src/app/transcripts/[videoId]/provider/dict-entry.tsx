@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { DictEntry, getDictTTS, getFullDict, getSentenceTTS } from "@/utils/cdn";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
 import { createContext, useContext, useState } from "react";
 
 interface DictEntryContextType {
@@ -16,7 +16,6 @@ interface DictEntryContextType {
 	dictEntry?: DictEntry;
 	audio?: string;
 	sentenceAudio?: string;
-	lang: string;
 }
 
 const DictEntryContext = createContext<DictEntryContextType | undefined>(undefined);
@@ -27,19 +26,16 @@ export const DictEntryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 	const [sentenceParams, setSentenceParams] = useState<string>("");
 	const [token, setToken] = useState<string>("");
 
-	const searchParams = useSearchParams();
-	const lang = searchParams.get("lang") ?? "es";
-
 	const { data: dictEntry, isLoading } = useQuery({
 		queryKey: ["dictEntry", dictParams],
 		queryFn: () => {
-			const [form, pos] = dictParams.split(",");
+			const [form, pos, lang] = dictParams.split(",");
 			return getFullDict({
 				form,
 				lemma: "",
 				sl: lang,
 				tl: "en",
-				pos,
+				pos: pos.toUpperCase(),
 				pow: "n",
 			});
 		},
@@ -49,7 +45,7 @@ export const DictEntryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 	const { data: audio } = useQuery({
 		queryKey: ["audio", dictParams],
 		queryFn: () => {
-			const [text] = dictParams.split(",");
+			const [text, _, lang] = dictParams.split(",");
 			return getDictTTS(lang, text);
 		},
 		enabled: dictParams.length > 0,
@@ -59,6 +55,7 @@ export const DictEntryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 		queryKey: ["sentence-audio", sentenceParams],
 		queryFn: () => {
 			const [text, hash] = sentenceParams.split(",");
+			const [_, __, lang] = dictParams.split(",");
 			return getSentenceTTS(lang, text, hash);
 		},
 		enabled: sentenceParams.length > 0,
@@ -77,7 +74,6 @@ export const DictEntryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 				setToken,
 				setSentenceParams,
 				sentenceAudio,
-				lang,
 			}}
 		>
 			{children}
