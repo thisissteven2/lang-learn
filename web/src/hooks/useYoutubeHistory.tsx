@@ -1,3 +1,5 @@
+"use client";
+
 import { fetchYTMetadata } from "@/utils/media";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
