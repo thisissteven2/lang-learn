@@ -87,16 +87,33 @@ function SentencesExamples({ word }: { word: string }) {
 	);
 }
 
-export function DictEntry({ lang, withExamplesFromSubtitles }: { lang: string; withExamplesFromSubtitles?: boolean }) {
+export function DictEntry({
+	lang,
+	withExamplesFromSubtitles,
+	limitHeight,
+}: {
+	lang: string;
+	withExamplesFromSubtitles?: boolean;
+	limitHeight?: boolean;
+}) {
 	const { drawerOpen, setDrawerOpen, setSentenceParams, isLoading, audio, sentenceAudio, dictEntry, token } =
 		useDictEntry();
 	const { play } = useAudioPlayer(audio);
 	const { play: playSentence } = useAudioPlayer(sentenceAudio);
 
-	const [isDesktop, setIsDesktop] = useState(false);
+	const [viewport, setViewport] = useState({ width: 0, height: 0 });
+
+	const isDesktop = viewport.width > 640;
+	const maxHeight =
+		isDesktop || !limitHeight ? `${viewport.height}px` : `${viewport.height - (viewport.width * 9) / 16}px`;
 
 	useEffect(() => {
-		const handleResize = () => setIsDesktop(window.innerWidth > 768);
+		const viewportHeight = window.visualViewport?.height || window.innerHeight;
+		const handleResize = () =>
+			setViewport({
+				width: window.innerWidth,
+				height: viewportHeight,
+			});
 		handleResize();
 		window.addEventListener("resize", handleResize);
 		return () => window.removeEventListener("resize", handleResize);
@@ -110,11 +127,19 @@ export function DictEntry({ lang, withExamplesFromSubtitles }: { lang: string; w
 				<Drawer.Overlay className="fixed inset-0 bg-black/40 z-30" />
 				<Drawer.Content
 					className={cx(
-						"bg-white dark:bg-[#030712] fixed z-40 shadow-lg rounded-none sm:h-full md:w-[28rem] max-h-[100vh] w-full transition-transform",
+						"bg-white dark:bg-[#030712] fixed z-40 shadow-lg rounded-none sm:h-full sm:w-[28rem] w-full transition-transform focus:outline-none",
 						isDesktop ? "right-0 top-0 bottom-0" : "bottom-0 left-0 right-0"
 					)}
+					style={{
+						maxHeight,
+					}}
 				>
-					<div className="overflow-y-auto p-4 h-full max-h-[100vh]">
+					<div
+						className="overflow-y-auto p-4 h-full"
+						style={{
+							maxHeight,
+						}}
+					>
 						{/* Header */}
 						<div className="flex justify-between items-start mb-4">
 							<Drawer.Title asChild>

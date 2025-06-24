@@ -58,7 +58,7 @@ function TranscriptComponent() {
 						});
 						setTimeout(() => {
 							setPlaying(false);
-						}, duration);
+						}, duration + 500);
 					}
 					return true;
 				}
@@ -87,7 +87,7 @@ function TranscriptComponent() {
 				onTimestampClick,
 			}}
 		>
-			<DictEntry lang={lang} withExamplesFromSubtitles />
+			<DictEntry lang={lang} withExamplesFromSubtitles limitHeight />
 
 			<div className="max-w-7xl mx-auto flex flex-col sm:flex-row max-md:gap-2 gap-6 p-0 max-sm:pb-3 sm:p-3 md:p-6">
 				{/* Left Column (md+): Video + Card */}
