@@ -18,7 +18,7 @@ export function SubtitleSettings() {
 	} = useSubtitleSettings();
 
 	return (
-		<Card className="max-w-4xl mx-auto max-sm:rounded-none max-sm:shadow-none">
+		<Card className="max-w-4xl mx-auto max-md:rounded-none max-md:shadow-none">
 			<Title>Subtitle Settings</Title>
 
 			<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 mt-2">

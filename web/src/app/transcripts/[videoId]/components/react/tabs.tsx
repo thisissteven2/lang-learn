@@ -111,7 +111,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 
 	return (
 		<TabGroup className="h-full">
-			<TabList>
+			<TabList className="max-xl:pt-2 max-sm:px-0 max-xl:px-2">
 				<Tab onClick={() => scrollToCurrent()}>Transcripts</Tab>
 				<Tab>Words</Tab>
 			</TabList>
@@ -119,13 +119,16 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 			<TabPanels className="relative h-full">
 				{/* Transcripts */}
 				<TabPanel className="h-full mt-0">
-					<div ref={subtitleWrapperRef} className="max-h-[calc(100%-48px)] overflow-y-auto space-y-4 pt-2 pr-4 pb-4">
+					<div
+						ref={subtitleWrapperRef}
+						className="max-h-[calc(100%-48px)] overflow-y-auto xl:space-y-4 pt-2 xl:pr-4 pb-4"
+					>
 						{subtitles.map((sub, i) => (
 							<div
 								key={i}
 								ref={i === activeIndex ? activeRef : null}
 								className={cx(
-									"subtitle p-2 rounded cursor-pointer transition-colors",
+									"subtitle p-2 xl:rounded cursor-pointer transition-colors",
 									i === activeIndex
 										? "bg-blue-50 dark:bg-blue-800/30"
 										: "hover:bg-gray-200 dark:hover:bg-gray-800 opacity-50"
@@ -182,7 +185,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 
 				{/* Words */}
 				<TabPanel className="h-full mt-0">
-					<div className="max-h-[calc(100%-48px)] overflow-y-auto space-y-4 pt-2 pr-4 pb-4">
+					<div className="max-h-[calc(100%-48px)] overflow-y-auto xl:space-y-4 pt-2 xl:pr-4 pb-4">
 						{memoizedCategorizedGroups.map(([range, tokens]) => (
 							<div key={range}>
 								<Title className="text-base">{range}</Title>
@@ -211,7 +214,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 														)}
 														<span
 															key={idx}
-															className={cx("px-2 rounded", colorClass, colorBy === "none" && "text-gray-700")}
+															className={cx("px-2 xl:rounded", colorClass, colorBy === "none" && "text-gray-700")}
 														>
 															{token.form.text}
 														</span>

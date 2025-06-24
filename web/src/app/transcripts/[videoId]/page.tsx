@@ -89,14 +89,14 @@ function TranscriptComponent() {
 		>
 			<DictEntry lang={lang} withExamplesFromSubtitles limitHeight />
 
-			<div className="max-w-7xl mx-auto flex flex-col sm:flex-row max-md:gap-2 gap-6 p-0 max-sm:pb-3 sm:p-3 md:p-6">
+			<div className="max-w-7xl mx-auto flex flex-col sm:flex-row md:gap-3 xl:gap-6 p-0 max-sm:pb-3 sm:p-0 md:p-3 xl:p-6">
 				{/* Left Column (md+): Video + Card */}
-				<div className="flex-1 w-full sm:w-2/3 px-0 sm:px-0">
+				<div className="h-full flex-1 w-full sm:w-2/3 px-0 sm:px-0">
 					<div ref={subtitleSettingsRef}>
 						<SubtitleSettings />
 					</div>
 					{/* Video */}
-					<div className="aspect-video w-full sm:rounded-lg sm:overflow-hidden sm:mt-6">
+					<div className="aspect-video w-full md:rounded-lg sm:overflow-hidden sm:mt-0 md:mt-3 xl:mt-6">
 						<ReactPlayer
 							ref={playerRef}
 							url={`https://www.youtube.com/watch?v=${videoId}`}
@@ -135,7 +135,7 @@ function TranscriptComponent() {
 					</div>
 
 					{/* Right Panel (md+ only) */}
-					<Card className="hidden sm:block mt-3">
+					<Card className="hidden sm:block max-md:rounded-none max-md:shadow-none md:mt-3 xl:mt-6">
 						<Title>Right Panel</Title>
 						<Text>Reserved for future features.</Text>
 					</Card>
@@ -143,9 +143,10 @@ function TranscriptComponent() {
 
 				{/* Right Column (md+): Subtitles */}
 				<Card
-					className="max-sm:hidden sticky sm:top-2 md:top-6 w-full sm:w-1/3 sm:p-2 md:p-4 overflow-hidden"
+					className="max-sm:hidden sticky max-md:border-l-0 max-md:rounded-none max-md:shadow-none md:top-2 xl:top-4 w-full sm:w-1/3 p-0 xl:p-4 overflow-hidden"
 					style={{
-						height: `calc(100vh - ${window?.innerWidth < 768 ? 20 : 48}px)`,
+						// height: `calc(100vh - ${window?.innerWidth < 768 ? 20 : 48}px)`,
+						maxHeight: "100vh",
 					}}
 				>
 					<SubtitleTabs setPlaying={setPlaying} getCurrentTime={getCurrentTime} onTimestampClick={onTimestampClick} />
