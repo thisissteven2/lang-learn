@@ -143,7 +143,7 @@ function TranscriptComponent() {
 
 				{/* Right Column (md+): Subtitles */}
 				<Card
-					className="max-sm:hidden sticky max-md:border-l-0 max-md:rounded-none max-md:shadow-none md:top-2 xl:top-4 w-full sm:w-1/3 p-0 xl:p-4 overflow-hidden"
+					className="max-sm:hidden sticky top-0 max-md:border-l-0 max-md:rounded-none max-md:shadow-none md:top-2 xl:top-4 w-full sm:w-1/3 p-0 xl:p-4 overflow-hidden"
 					style={{
 						// height: `calc(100vh - ${window?.innerWidth < 768 ? 20 : 48}px)`,
 						maxHeight: "100vh",
