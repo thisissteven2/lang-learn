@@ -56,7 +56,11 @@ function SentencesExamples({ word }: { word: string }) {
 								key={index}
 								className="bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
 							>
-								<Button onClick={() => onTimestampClick(sentence.begin)} variant="light" className="text-sm">
+								<Button
+									onClick={() => onTimestampClick(sentence.begin, sentence.end)}
+									variant="light"
+									className="text-sm"
+								>
 									{formatTime(sentence.begin)}
 								</Button>
 								<div className="flex justify-between items-center">

@@ -47,21 +47,27 @@ function TranscriptComponent() {
 	const { setDrawerOpen } = useDictEntry();
 
 	const onTimestampClick = useCallback(
-		(timestamp: number) => {
+		(start: number, end?: number) => {
 			setDrawerOpen((prevDrawerOpen) => {
 				if (prevDrawerOpen) {
-					setPlaying(() => {
-						playerRef.current?.seekTo(timestamp / 1000, "seconds");
-						return true; // drawer is open, autoplay timestamp
-					});
-					return false; // drawer is open, close drawer
+					if (end) {
+						const duration = end - start;
+						setPlaying(() => {
+							playerRef.current?.seekTo(start / 1000, "seconds");
+							return true; // drawer is open, autoplay timestamp
+						});
+						setTimeout(() => {
+							setPlaying(false);
+						}, duration);
+					}
+					return true;
 				}
 
 				// drwaer not open, proceed as usual
 				setPlaying((prevPlaying: boolean) => {
 					const wasPlaying = prevPlaying;
 
-					playerRef.current?.seekTo(timestamp / 1000, "seconds");
+					playerRef.current?.seekTo(start / 1000, "seconds");
 
 					if (wasPlaying || wasPlaying == null) {
 						return true;

@@ -5,7 +5,7 @@ import { formatTime } from "@/utils/transcripts";
 import { getColorClass, getFreqRangeLabel, getTransliteration } from "../../components/utils";
 import { freqColorMap, posColorMap } from "../../components/constants";
 import { cx } from "@/lib/utils";
-import { JSX, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { JSX, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSubtitleSettings } from "../../provider/subtitle-settings";
 import { useParsedSubsData } from "../hook";
 import { useDictEntry } from "../../provider/dict-entry";
@@ -66,7 +66,7 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 		});
 	}, [categorizedGroups]);
 
-	useEffect(() => {
+	const scrollToCurrent = useCallback(() => {
 		const activeEl = activeRef.current;
 		const wrapper = subtitleWrapperRef.current;
 
@@ -83,7 +83,11 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 				behavior: "smooth",
 			});
 		}
-	}, [activeIndex]);
+	}, []);
+
+	useEffect(() => {
+		scrollToCurrent();
+	}, [activeIndex, scrollToCurrent]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -108,11 +112,11 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 	return (
 		<TabGroup className="h-full">
 			<TabList>
-				<Tab>Transcripts</Tab>
+				<Tab onClick={() => scrollToCurrent()}>Transcripts</Tab>
 				<Tab>Words</Tab>
 			</TabList>
 
-			<TabPanels className="h-full">
+			<TabPanels className="relative h-full">
 				{/* Transcripts */}
 				<TabPanel className="h-full mt-0">
 					<div ref={subtitleWrapperRef} className="max-h-[calc(100%-48px)] overflow-y-auto space-y-4 pt-2 pr-4 pb-4">

@@ -3,7 +3,7 @@
 import { createContext, useContext } from "react";
 
 interface ReactPlayerContextType {
-	onTimestampClick: (timestamp: number) => void;
+	onTimestampClick: (start: number, end?: number) => void;
 }
 
 export const ReactPlayerContext = createContext<ReactPlayerContextType | undefined>(undefined);
