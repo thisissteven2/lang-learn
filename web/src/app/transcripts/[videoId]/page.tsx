@@ -103,7 +103,7 @@ function TranscriptComponent() {
 							playing={playing}
 							width="100%"
 							height="100%"
-							controls
+							controls={playing ? false : true}
 							onReady={() => {
 								if (lastWatched) {
 									playerRef?.current?.seekTo(lastWatched);

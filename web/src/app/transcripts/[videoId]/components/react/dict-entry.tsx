@@ -104,7 +104,7 @@ export function DictEntry({
 	const [viewport, setViewport] = useState({ width: 0, height: 0 });
 
 	const isDesktop = viewport.width > 640;
-	const maxHeight =
+	const height =
 		isDesktop || !limitHeight ? `${viewport.height}px` : `${viewport.height - (viewport.width * 9) / 16}px`;
 
 	useEffect(() => {
@@ -124,20 +124,20 @@ export function DictEntry({
 	return (
 		<Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen} direction={isDesktop ? "right" : "bottom"}>
 			<Drawer.Portal>
-				<Drawer.Overlay className="fixed inset-0 bg-black/40 z-30" />
+				<Drawer.Overlay className={cx("fixed inset-0 z-30", limitHeight && !isDesktop ? "" : "bg-black/40 ")} />
 				<Drawer.Content
 					className={cx(
-						"bg-white dark:bg-[#030712] fixed z-40 shadow-lg rounded-none sm:h-full sm:w-[28rem] w-full transition-transform focus:outline-none",
+						"bg-white dark:bg-[#030712] fixed z-40 shadow-lg rounded-none sm:w-[28rem] w-full transition-transform focus:outline-none",
 						isDesktop ? "right-0 top-0 bottom-0" : "bottom-0 left-0 right-0"
 					)}
 					style={{
-						maxHeight,
+						height,
 					}}
 				>
 					<div
-						className="overflow-y-auto p-4 h-full"
+						className="overflow-y-auto p-4"
 						style={{
-							maxHeight,
+							height,
 						}}
 					>
 						{/* Header */}
