@@ -103,9 +103,15 @@ export function DictEntry({
 
 	const [viewport, setViewport] = useState({ width: 0, height: 0 });
 
+	const { videoSize } = useSubtitleSettings();
+
 	const isDesktop = viewport.width > 640;
 	const height =
-		isDesktop || !limitHeight ? `${viewport.height}px` : `${viewport.height - (viewport.width * 9) / 16}px`;
+		isDesktop || !limitHeight || videoSize === "full-screen"
+			? `${viewport.height}px`
+			: videoSize === "half-screen"
+			? `${viewport.height * 0.5}px`
+			: `${viewport.height - (viewport.width * 9) / 16}px`;
 
 	const isSmToMd = viewport.width < 768 && viewport.width > 640;
 	const isMobile = viewport.width < 640;
@@ -128,7 +134,9 @@ export function DictEntry({
 	return (
 		<Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen} direction={isDesktop ? "right" : "bottom"}>
 			<Drawer.Portal>
-				<Drawer.Overlay className={cx("fixed inset-0 z-30", limitHeight && !isDesktop ? "" : "bg-black/40 ")} />
+				<Drawer.Overlay
+					className={cx("fixed inset-0 z-30", limitHeight && (!isDesktop || isSmToMd) ? "" : "bg-black/40 ")}
+				/>
 				<Drawer.Content
 					className={cx(
 						"bg-white dark:bg-[#030712] rounded-none transition-transform focus:outline-none p-0",

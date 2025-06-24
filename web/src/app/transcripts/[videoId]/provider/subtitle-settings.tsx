@@ -97,7 +97,9 @@ export const SubtitleSettingsProvider: React.FC<{ children: React.ReactNode }> =
 export function useSubtitleSettings() {
 	const context = useContext(SubtitleSettingsContext);
 	if (!context) {
-		throw new Error("useSubtitleSettings must be used within a SubtitleSettingsProvider");
+		return {
+			videoSize: "default",
+		} as SubtitleSettingsContextType;
 	}
 	return context;
 }
