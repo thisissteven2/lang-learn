@@ -12,6 +12,7 @@ import { DictEntry } from "./components/react/dict-entry";
 import { useSearchParams } from "next/navigation";
 import { useYouTubeHistory } from "@/hooks/useYoutubeHistory";
 import { ReactPlayerContext } from "./provider/react-player";
+import clsx from "clsx";
 
 export default function TranscriptPage() {
 	return (
@@ -30,7 +31,7 @@ function TranscriptComponent() {
 	// const [currentTime, setCurrentTime] = useState(0);
 	const [playing, setPlaying] = useState<any>(null);
 
-	const { videoId } = useSubtitleSettings();
+	const { videoId, videoSize } = useSubtitleSettings();
 
 	const getCurrentTime = useCallback(() => {
 		if (!playerRef.current) return null;
@@ -96,7 +97,14 @@ function TranscriptComponent() {
 						<SubtitleSettings />
 					</div>
 					{/* Video */}
-					<div className="aspect-video w-full md:rounded-lg sm:overflow-hidden sm:mt-0 md:mt-3 xl:mt-6">
+					<div
+						className={clsx(
+							"md:rounded-lg sm:overflow-hidden sm:mt-0 md:mt-3 xl:mt-6",
+							videoSize === "default" && "aspect-video w-full",
+							videoSize === "half-screen" && "h-[50dvh] w-full",
+							videoSize === "full-screen" && "h-[calc(100dvh+4px)] w-full"
+						)}
+					>
 						<ReactPlayer
 							ref={playerRef}
 							url={`https://www.youtube.com/watch?v=${videoId}`}

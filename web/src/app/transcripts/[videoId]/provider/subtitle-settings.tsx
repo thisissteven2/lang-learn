@@ -9,12 +9,15 @@ import { createContext, useContext } from "react";
 
 type ColorBy = "none" | "pos" | "freq";
 type ColorMode = "text" | "underline";
+type VideoSize = "default" | "half-screen" | "full-screen";
 
 interface SubtitleSettingsContextType {
 	colorBy: ColorBy;
 	setColorBy: (value: ColorBy) => void;
 	colorMode: ColorMode;
 	setColorMode: (value: ColorMode) => void;
+	videoSize: VideoSize;
+	setVideoSize: (value: VideoSize) => void;
 	audioOnly: boolean;
 	setAudioOnly: (value: boolean) => void;
 	showPinyin: boolean;
@@ -33,6 +36,7 @@ const SubtitleSettingsContext = createContext<SubtitleSettingsContextType | unde
 
 export const SubtitleSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [colorBy, setColorBy] = usePersistedState<ColorBy>("colorBy", "pos");
+	const [videoSize, setVideoSize] = usePersistedState<VideoSize>("videoSize", "default");
 	const [colorMode, setColorMode] = usePersistedState<ColorMode>("colorMode", "text");
 	const [audioOnly, setAudioOnly] = usePersistedState<boolean>("audioOnly", false);
 	const [showPinyin, setShowPinyin] = usePersistedState<boolean>("showPinyin", true);
@@ -69,6 +73,8 @@ export const SubtitleSettingsProvider: React.FC<{ children: React.ReactNode }> =
 				setColorBy,
 				colorMode,
 				setColorMode,
+				videoSize,
+				setVideoSize,
 				audioOnly,
 				setAudioOnly,
 				showPinyin,

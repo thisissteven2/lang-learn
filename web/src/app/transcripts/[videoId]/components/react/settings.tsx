@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Card, Text, Title, Switch, Select, SelectItem } from "@tremor/react";
@@ -9,6 +10,8 @@ export function SubtitleSettings() {
 		setColorBy,
 		colorMode,
 		setColorMode,
+		videoSize,
+		setVideoSize,
 		audioOnly,
 		setAudioOnly,
 		showPinyin,
@@ -25,14 +28,17 @@ export function SubtitleSettings() {
 				{/* Left side: Color mode */}
 				<div className="flex flex-wrap gap-2 items-center">
 					<Text className="shrink-0">Color by:</Text>
-					<Select
-						value={colorBy}
-						onValueChange={(v) => setColorBy(v as "none" | "pos" | "freq")}
-						className="min-w-[140px]"
-					>
+					<Select value={colorBy} onValueChange={(v) => setColorBy(v as any)} className="min-w-[140px]">
 						<SelectItem value="none">No Color</SelectItem>
 						<SelectItem value="pos">Part of Speech</SelectItem>
 						<SelectItem value="freq">Vocabulary Level</SelectItem>
+					</Select>
+
+					<Text className="shrink-0">Video Size</Text>
+					<Select value={videoSize} onValueChange={(v) => setVideoSize(v as any)} className="min-w-[140px]">
+						<SelectItem value="default">Default</SelectItem>
+						<SelectItem value="half-screen">Half Screen</SelectItem>
+						<SelectItem value="full-screen">Full Screen</SelectItem>
 					</Select>
 				</div>
 
