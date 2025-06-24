@@ -107,6 +107,10 @@ export function DictEntry({
 	const height =
 		isDesktop || !limitHeight ? `${viewport.height}px` : `${viewport.height - (viewport.width * 9) / 16}px`;
 
+	const isSmToMd = viewport.width < 768 && viewport.width > 640;
+	const isMobile = viewport.width < 640;
+	const width = isSmToMd ? "320px" : isMobile ? viewport.width : "448px";
+
 	useEffect(() => {
 		const viewportHeight = window.visualViewport?.height || window.innerHeight;
 		const handleResize = () =>
@@ -127,12 +131,13 @@ export function DictEntry({
 				<Drawer.Overlay className={cx("fixed inset-0 z-30", limitHeight && !isDesktop ? "" : "bg-black/40 ")} />
 				<Drawer.Content
 					className={cx(
-						"bg-white dark:bg-[#030712] rounded-none sm:w-[28rem] transition-transform focus:outline-none p-0",
+						"bg-white dark:bg-[#030712] rounded-none transition-transform focus:outline-none p-0",
 						isDesktop ? "right-0 top-0 bottom-0" : "bottom-0 left-0 right-0",
-						"fixed z-40 flex flex-col h-full"
+						"fixed z-40 flex flex-col h-full w-full"
 					)}
 					style={{
 						maxHeight: height,
+						maxWidth: width,
 					}}
 				>
 					<div className="p-4 overflow-y-auto">

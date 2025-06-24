@@ -91,7 +91,7 @@ function TranscriptComponent() {
 
 			<div className="max-w-7xl mx-auto flex flex-col sm:flex-row md:gap-3 xl:gap-6 p-0 max-sm:pb-3 sm:p-0 md:p-3 xl:p-6">
 				{/* Left Column (md+): Video + Card */}
-				<div className="h-full flex-1 w-full sm:w-2/3 px-0 sm:px-0">
+				<div className="h-full w-full sm:w-2/3 px-0 sm:px-0">
 					<div ref={subtitleSettingsRef}>
 						<SubtitleSettings />
 					</div>
@@ -143,7 +143,7 @@ function TranscriptComponent() {
 
 				{/* Right Column (md+): Subtitles */}
 				<Card
-					className="max-sm:hidden sticky top-0 max-md:border-l-0 max-md:rounded-none max-md:shadow-none md:top-2 xl:top-4 w-full sm:w-1/3 p-0 xl:p-4 overflow-hidden"
+					className="max-sm:hidden sticky top-0 max-md:border-l-0 max-md:rounded-none max-md:shadow-none md:top-2 xl:top-4 w-full max-w-xs lg:max-w-sm p-0 xl:p-4 overflow-hidden"
 					style={{
 						// height: `calc(100vh - ${window?.innerWidth < 768 ? 20 : 48}px)`,
 						maxHeight: "100vh",

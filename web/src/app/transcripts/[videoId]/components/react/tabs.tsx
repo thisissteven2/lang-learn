@@ -118,117 +118,107 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 
 			<TabPanels className="relative h-full">
 				{/* Transcripts */}
-				<TabPanel className="h-full mt-0">
-					<div
-						ref={subtitleWrapperRef}
-						className="max-h-[calc(100%-48px)] overflow-y-auto xl:space-y-4 pt-2 xl:pr-4 pb-4"
-					>
-						{subtitles.map((sub, i) => (
-							<div
-								key={i}
-								ref={i === activeIndex ? activeRef : null}
-								className={cx(
-									"subtitle p-2 xl:rounded cursor-pointer transition-colors",
-									i === activeIndex
-										? "bg-blue-50 dark:bg-blue-800/30"
-										: "hover:bg-gray-200 dark:hover:bg-gray-800 opacity-50"
-								)}
-							>
-								<Button onClick={() => onTimestampClick(sub.begin)} variant="light" className="text-sm">
-									{formatTime(sub.begin)}
-								</Button>
+				<TabPanel
+					ref={subtitleWrapperRef}
+					className="h-full mt-0 max-h-[calc(100%-48px)] overflow-y-auto xl:space-y-4 sm:max-xl:px-2 pt-2 xl:pr-4 pb-4"
+				>
+					{subtitles.map((sub, i) => (
+						<div
+							key={i}
+							ref={i === activeIndex ? activeRef : null}
+							className={cx(
+								"subtitle p-2 xl:rounded cursor-pointer transition-colors",
+								i === activeIndex
+									? "bg-blue-50 dark:bg-blue-800/30"
+									: "hover:bg-gray-200 dark:hover:bg-gray-800 opacity-50"
+							)}
+						>
+							<Button onClick={() => onTimestampClick(sub.begin)} variant="light" className="text-sm">
+								{formatTime(sub.begin)}
+							</Button>
 
-								{/* Tokens */}
-								<div className="text-xl flex flex-wrap gap-1">
-									{sub.tokens.map((token, j: number) => {
-										const key = colorBy === "pos" ? token.pos : getFreqRangeLabel(token.freq, ranges) ?? "unknown";
-										const colorClass = getColorClass(key, useUnderline, colorBy === "pos" ? posColorMap : freqColorMap);
+							{/* Tokens */}
+							<div className="text-xl flex flex-wrap gap-1">
+								{sub.tokens.map((token, j: number) => {
+									const key = colorBy === "pos" ? token.pos : getFreqRangeLabel(token.freq, ranges) ?? "unknown";
+									const colorClass = getColorClass(key, useUnderline, colorBy === "pos" ? posColorMap : freqColorMap);
 
-										const transliteration = getTransliteration(token);
+									const transliteration = getTransliteration(token);
 
-										return (
-											<OpenDictEntry key={j}>
-												{(update) => (
-													<div
-														onClick={() => {
-															setPlaying(false);
-															update(
-																`${token.form.text},${token.pos},${lang}`,
-																`${token.form.text},${transliteration}`
-															);
-														}}
-														className="flex flex-col items-center"
-													>
-														{showPinyin && (
-															<span className="text-xs text-gray-500 dark:text-gray-300">{transliteration}</span>
-														)}
-														<span className={cx(colorClass, colorBy === "none" && "text-gray-700")}>
-															{token.form.text}
-														</span>
-													</div>
-												)}
-											</OpenDictEntry>
-										);
-									})}
-								</div>
-
-								{/* Translation */}
-								{showTranslation && subsTranslations && (
-									<Text className="text-sm text-gray-400 dark:text-gray-400 italic mt-1">{subsTranslations[i]}</Text>
-								)}
+									return (
+										<OpenDictEntry key={j}>
+											{(update) => (
+												<div
+													onClick={() => {
+														setPlaying(false);
+														update(`${token.form.text},${token.pos},${lang}`, `${token.form.text},${transliteration}`);
+													}}
+													className="flex flex-col items-center"
+												>
+													{showPinyin && (
+														<span className="text-xs text-gray-500 dark:text-gray-300">{transliteration}</span>
+													)}
+													<span className={cx(colorClass, colorBy === "none" && "text-gray-700")}>
+														{token.form.text}
+													</span>
+												</div>
+											)}
+										</OpenDictEntry>
+									);
+								})}
 							</div>
-						))}
-					</div>
-					{isLoading && <Text>Transcripts will show here.</Text>}
-					{isError && <Text className="text-red-500">Failed to fetch transcripts.</Text>}
+
+							{/* Translation */}
+							{showTranslation && subsTranslations && (
+								<Text className="text-sm text-gray-400 dark:text-gray-400 italic mt-1">{subsTranslations[i]}</Text>
+							)}
+						</div>
+					))}
+					{isLoading && <Text className="mt-2">Transcripts will show here.</Text>}
+					{isError && <Text className="mt-2 text-red-500">Failed to fetch transcripts.</Text>}
 				</TabPanel>
 
 				{/* Words */}
-				<TabPanel className="h-full mt-0">
-					<div className="max-h-[calc(100%-48px)] overflow-y-auto xl:space-y-4 pt-2 xl:pr-4 pb-4">
-						{memoizedCategorizedGroups.map(([range, tokens]) => (
-							<div key={range}>
-								<Title className="text-base">{range}</Title>
-								<div className="flex flex-wrap gap-2 mt-2 text-xl">
-									{tokens.map((token, idx) => {
-										const key = colorBy === "pos" ? token.pos : range;
-										const colorClass = getColorClass(key, useUnderline, colorBy === "pos" ? posColorMap : freqColorMap);
+				<TabPanel className="h-full mt-0 max-h-[calc(100%-48px)] overflow-y-auto xl:space-y-4 sm:max-xl:px-2 pt-2 xl:pr-4 pb-4">
+					{memoizedCategorizedGroups.map(([range, tokens]) => (
+						<div key={range}>
+							<Title className="text-base">{range}</Title>
+							<div className="flex flex-wrap gap-2 mt-2 text-xl">
+								{tokens.map((token, idx) => {
+									const key = colorBy === "pos" ? token.pos : range;
+									const colorClass = getColorClass(key, useUnderline, colorBy === "pos" ? posColorMap : freqColorMap);
 
-										const transliteration = getTransliteration(token);
+									const transliteration = getTransliteration(token);
 
-										return (
-											<OpenDictEntry key={idx}>
-												{(update) => (
-													<div
-														onClick={() => {
-															setPlaying(false);
-															update(
-																`${token.form.text},${token.pos},${lang}`,
-																`${token.form.text},${transliteration}`
-															);
-														}}
-														className="py-1 flex flex-col items-center cursor-pointer"
+									return (
+										<OpenDictEntry key={idx}>
+											{(update) => (
+												<div
+													onClick={() => {
+														setPlaying(false);
+														update(`${token.form.text},${token.pos},${lang}`, `${token.form.text},${transliteration}`);
+													}}
+													className="py-1 flex flex-col items-center cursor-pointer"
+												>
+													{showPinyin && (
+														<span className="text-xs text-gray-500 dark:text-gray-300">{transliteration}</span>
+													)}
+													<span
+														key={idx}
+														className={cx("px-2 xl:rounded", colorClass, colorBy === "none" && "text-gray-700")}
 													>
-														{showPinyin && (
-															<span className="text-xs text-gray-500 dark:text-gray-300">{transliteration}</span>
-														)}
-														<span
-															key={idx}
-															className={cx("px-2 xl:rounded", colorClass, colorBy === "none" && "text-gray-700")}
-														>
-															{token.form.text}
-														</span>
-													</div>
-												)}
-											</OpenDictEntry>
-										);
-									})}
-								</div>
+														{token.form.text}
+													</span>
+												</div>
+											)}
+										</OpenDictEntry>
+									);
+								})}
 							</div>
-						))}
-					</div>
-					{isLoading && <Text>Vocabularies categorized by levels will show here.</Text>}
-					{isError && <Text className="text-red-500">Failed to fetch vocabularies.</Text>}
+						</div>
+					))}
+					{isLoading && <Text className="mt-2">Vocabularies categorized by levels will show here.</Text>}
+					{isError && <Text className="mt-2 text-red-500">Failed to fetch vocabularies.</Text>}
 				</TabPanel>
 			</TabPanels>
 		</TabGroup>
