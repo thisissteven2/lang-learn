@@ -44,7 +44,7 @@ function TranscriptComponent() {
 	const lang = searchParams.get("lang") ?? "es";
 	const lastWatched = parseInt(searchParams.get("last_watched") ?? "0");
 
-	const { setDrawerOpen } = useDictEntry();
+	const { drawerOpen, setDrawerOpen } = useDictEntry();
 
 	const onTimestampClick = useCallback(
 		(start: number, end?: number) => {
@@ -103,7 +103,7 @@ function TranscriptComponent() {
 							playing={playing}
 							width="100%"
 							height="100%"
-							controls={playing ? false : true}
+							controls={drawerOpen ? false : true}
 							onReady={() => {
 								if (lastWatched) {
 									playerRef?.current?.seekTo(lastWatched);

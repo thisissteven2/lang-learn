@@ -127,19 +127,15 @@ export function DictEntry({
 				<Drawer.Overlay className={cx("fixed inset-0 z-30", limitHeight && !isDesktop ? "" : "bg-black/40 ")} />
 				<Drawer.Content
 					className={cx(
-						"bg-white dark:bg-[#030712] fixed z-40 shadow-lg rounded-none sm:w-[28rem] w-full transition-transform focus:outline-none",
-						isDesktop ? "right-0 top-0 bottom-0" : "bottom-0 left-0 right-0"
+						"bg-white dark:bg-[#030712] rounded-none sm:w-[28rem] transition-transform focus:outline-none p-0",
+						isDesktop ? "right-0 top-0 bottom-0" : "bottom-0 left-0 right-0",
+						"fixed z-40 flex flex-col h-full"
 					)}
 					style={{
-						height,
+						maxHeight: height,
 					}}
 				>
-					<div
-						className="overflow-y-auto p-4"
-						style={{
-							height,
-						}}
-					>
+					<div className="p-4 overflow-y-auto">
 						{/* Header */}
 						<div className="flex justify-between items-start mb-4">
 							<Drawer.Title asChild>
