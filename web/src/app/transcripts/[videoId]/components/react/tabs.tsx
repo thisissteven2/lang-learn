@@ -10,6 +10,7 @@ import { useSubtitleSettings } from "../../provider/subtitle-settings";
 import { useParsedSubsData } from "../hook";
 import { useDictEntry } from "../../provider/dict-entry";
 import { useSearchParams } from "next/navigation";
+import { LockWindowScroll } from "./lock-window-scroll";
 
 type SubtitleTabsProps = {
 	getCurrentTime: () => number | null;
@@ -111,9 +112,11 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 
 	return (
 		<TabGroup className="h-full">
-			<TabList className="max-xl:pt-2 max-sm:px-0 max-xl:px-2">
+			<TabList className="relative max-xl:pt-2 max-sm:px-0 max-xl:px-2">
 				<Tab onClick={() => scrollToCurrent()}>Transcripts</Tab>
 				<Tab>Words</Tab>
+
+				<LockWindowScroll />
 			</TabList>
 
 			<TabPanels className="relative h-full">

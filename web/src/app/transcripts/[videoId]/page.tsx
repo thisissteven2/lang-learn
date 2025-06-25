@@ -47,6 +47,8 @@ function TranscriptComponent() {
 
 	const { drawerOpen, setDrawerOpen } = useDictEntry();
 
+	const toStopAfterRef = useRef(0);
+
 	const onTimestampClick = useCallback(
 		(start: number, end?: number) => {
 			setDrawerOpen((prevDrawerOpen) => {
@@ -55,11 +57,9 @@ function TranscriptComponent() {
 						const duration = end - start;
 						setPlaying(() => {
 							playerRef.current?.seekTo(start / 1000, "seconds");
+							toStopAfterRef.current = duration;
 							return true; // drawer is open, autoplay timestamp
 						});
-						setTimeout(() => {
-							setPlaying(false);
-						}, duration + 500);
 					}
 					return true;
 				}
@@ -132,6 +132,14 @@ function TranscriptComponent() {
 										top: scrollToY + additionalPixel,
 										behavior: "smooth",
 									});
+								}
+
+								if (toStopAfterRef.current) {
+									setTimeout(() => {
+										setPlaying(false);
+									}, toStopAfterRef.current - 300);
+
+									toStopAfterRef.current = 0;
 								}
 							}}
 							onPause={() => setPlaying(false)}
