@@ -17,7 +17,7 @@ export function ScrollLockHandler() {
 	React.useEffect(() => {
 		const isTranscriptPage = /^\/transcripts\/[^/]+$/.test(pathname);
 		if (!isTranscriptPage) {
-			document.body.style.overflowY = "auto";
+			document.body.style.overflow = "auto";
 		}
 	}, [pathname]);
 
