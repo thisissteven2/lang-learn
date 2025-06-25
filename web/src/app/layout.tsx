@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Lexend_Deca } from "next/font/google";
 import "@/styles/globals.css";
-import { QueryProvider } from "./providers";
+import { QueryProvider, ScrollLockHandler } from "./providers";
 import { ThemeProvider } from "next-themes";
 
 const lexend = Lexend_Deca({
@@ -27,6 +27,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
+			<ScrollLockHandler />
 			<ThemeProvider attribute="class">
 				<body className={`${lexend.className} antialiased dark:bg-[#030712]`}>
 					<QueryProvider>{children}</QueryProvider>

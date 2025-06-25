@@ -22,35 +22,35 @@ import ReactPlayer from "react-player";
 import { SubtitleScroller } from "./subtitle-scroller";
 
 export const posColorMap: Record<string, string> = {
-	NOUN: "text-blue-500",
-	VERB: "text-green-500",
-	ADJ: "text-red-500",
-	ADV: "text-purple-500",
-	PRON: "text-amber-600",
-	PROPN: "text-yellow-600", // proper noun
-	NUM: "text-pink-500", // numerals
-	ADP: "text-teal-500", // adpositions (in, on, etc.)
-	PART: "text-indigo-500", // particles (e.g. “to” in “to go”)
-	CCONJ: "text-cyan-600", // coordinating conjunctions (and, but)
-	SCONJ: "text-cyan-800", // subordinating conjunctions (because, although)
-	DET: "text-fuchsia-600", // determiners (a, the, some)
-	AUX: "text-lime-600", // auxiliary verbs (is, was, will)
-	INTJ: "text-rose-500", // interjections (oh, wow)
-	SYM: "text-gray-600", // symbols
-	X: "text-gray-400", // unknown
-	PUNCT: "text-gray-500", // punctuation
+	NOUN: "text-blue-500 dark:text-blue-300",
+	VERB: "text-green-500 dark:text-green-300",
+	ADJ: "text-red-500 dark:text-red-300",
+	ADV: "text-purple-500 dark:text-purple-300",
+	PRON: "text-amber-600 dark:text-amber-300",
+	PROPN: "text-yellow-600 dark:text-yellow-300",
+	NUM: "text-pink-500 dark:text-pink-300",
+	ADP: "text-teal-500 dark:text-teal-300",
+	PART: "text-indigo-500 dark:text-indigo-300",
+	CCONJ: "text-cyan-600 dark:text-cyan-300",
+	SCONJ: "text-cyan-800 dark:text-cyan-400",
+	DET: "text-fuchsia-600 dark:text-fuchsia-300",
+	AUX: "text-lime-600 dark:text-lime-300",
+	INTJ: "text-rose-500 dark:text-rose-300",
+	SYM: "text-gray-600 dark:text-gray-400",
+	X: "text-gray-400 dark:text-gray-300",
+	PUNCT: "text-gray-500 dark:text-gray-300",
 };
 
 export const freqColorMap: Record<string, string> = {
-	"1-100": "text-red-600",
-	"101-200": "text-orange-600",
-	"201-500": "text-yellow-600",
-	"501-1000": "text-green-600",
-	"1001-2000": "text-blue-500",
-	"2001-3500": "text-blue-700",
-	"3501-5000": "text-blue-800",
-	"5001-8000": "text-purple-500",
-	"8001+": "text-purple-700",
+	"1-100": "text-red-600 dark:text-red-300",
+	"101-200": "text-orange-600 dark:text-orange-300",
+	"201-500": "text-yellow-600 dark:text-yellow-300",
+	"501-1000": "text-green-600 dark:text-green-300",
+	"1001-2000": "text-blue-500 dark:text-blue-300",
+	"2001-3500": "text-blue-700 dark:text-blue-400",
+	"3501-5000": "text-blue-800 dark:text-blue-500",
+	"5001-8000": "text-purple-500 dark:text-purple-300",
+	"8001+": "text-purple-700 dark:text-purple-400",
 };
 
 function formatTime(ms: number): string {
