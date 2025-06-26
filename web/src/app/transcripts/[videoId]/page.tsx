@@ -31,7 +31,7 @@ function TranscriptComponent() {
 	// const [currentTime, setCurrentTime] = useState(0);
 	const [playing, setPlaying] = useState<any>(null);
 
-	const { videoId, videoSize } = useSubtitleSettings();
+	const { videoId, videoSize, audioOnly } = useSubtitleSettings();
 
 	const getCurrentTime = useCallback(() => {
 		if (!playerRef.current) return null;
@@ -102,7 +102,8 @@ function TranscriptComponent() {
 							"md:rounded-lg sm:overflow-hidden sm:mt-0 md:mt-3 xl:mt-6",
 							videoSize === "default" && "aspect-video w-full",
 							videoSize === "half-screen" && "h-[50dvh] w-full",
-							videoSize === "full-screen" && "h-[calc(100dvh+4px)] w-full"
+							videoSize === "full-screen" && "h-[calc(100dvh+4px)] w-full",
+							audioOnly && "opacity-0 h-0 w-0"
 						)}
 					>
 						<ReactPlayer

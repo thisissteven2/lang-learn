@@ -6,7 +6,7 @@ import { useDictEntry } from "../../provider/dict-entry";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { cx } from "@/lib/utils";
 import { RiVolumeUpLine, RiCloseLine } from "@remixicon/react";
-import { getSentenceTransliteration } from "../../components/utils";
+import { getSentenceTransliteration, getTransliteration } from "../../components/utils";
 import { posReadableMap } from "../../components/constants";
 import { WordStatusButtons } from "../../components/react/word-status-buttons";
 import { useSubtitleSettings } from "../../provider/subtitle-settings";
@@ -19,19 +19,36 @@ function SentencesExamples({ word }: { word: string }) {
 	const { subtitles } = useParsedSubsData(subsData);
 
 	const sentencesExamplesFromSubtitles = useMemo(() => {
-		const examples = [];
-		for (let i = 0; i < subtitles.length; i++) {
-			const subtitle = subtitles[i];
-			if (examples.length === 3) break;
-			if (subtitle.text.includes(word) && examples.length < 3) {
-				examples.push({
-					index: i,
-					...subtitle,
-				});
+		try {
+			const examples = [];
+			for (let i = 0; i < subtitles.length; i++) {
+				if (examples.length === 3) break;
+				const subtitle = subtitles[i];
+
+				const transliteration = subtitle.tokens.map(getTransliteration).join(" ").trim();
+
+				const sentenceChunks = subtitle.text
+					.split(word ? word : "")
+					.flatMap((chunk, i, arr) => (i < arr.length - 1 ? [chunk, word] : [chunk]));
+
+				const translation = subsTranslations[i];
+
+				if (subtitle.text.includes(word) && examples.length < 3) {
+					examples.push({
+						index: i,
+						transliteration,
+						sentenceChunks,
+						translation,
+						...subtitle,
+					});
+				}
 			}
+			return examples;
+		} catch (e) {
+			console.log(e);
+			return [];
 		}
-		return examples;
-	}, [subtitles, word]);
+	}, [subsTranslations, subtitles, word]);
 
 	const { onTimestampClick } = useReactPlayer();
 
@@ -46,11 +63,6 @@ function SentencesExamples({ word }: { word: string }) {
 
 				<div>
 					{sentencesExamplesFromSubtitles.map((sentence, index) => {
-						const transliteration = sentence.tokens.map(getSentenceTransliteration).join(" ").trim();
-						const sentenceChunks = sentence.text
-							.split(word)
-							.flatMap((chunk, i, arr) => (i < arr.length - 1 ? [chunk, word] : [chunk]));
-
 						return (
 							<Card
 								key={index}
@@ -65,7 +77,7 @@ function SentencesExamples({ word }: { word: string }) {
 								</Button>
 								<div className="flex justify-between items-center">
 									<Text className="text-black dark:text-white text-xl">
-										{sentenceChunks.map((text, index) => {
+										{sentence.sentenceChunks.map((text, index) => {
 											const isActive = text === word;
 											return (
 												<span key={index} className={isActive ? "text-yellow-600 dark:text-yellow-500" : ""}>
@@ -75,8 +87,8 @@ function SentencesExamples({ word }: { word: string }) {
 										})}
 									</Text>
 								</div>
-								<Text className="text-gray-500 dark:text-gray-400 italic">{transliteration}</Text>
-								<Text className="text-blue-800 dark:text-blue-400 mt-2">{subsTranslations[sentence.index]}</Text>
+								<Text className="text-gray-500 dark:text-gray-400 italic">{sentence.transliteration}</Text>
+								<Text className="text-blue-800 dark:text-blue-400 mt-2">{sentence.translation}</Text>
 							</Card>
 						);
 					})}
@@ -191,7 +203,7 @@ export function DictEntry({
 
 								<Divider />
 
-								{withExamplesFromSubtitles && <SentencesExamples word={word} />}
+								{withExamplesFromSubtitles && word && <SentencesExamples word={word} />}
 
 								{/* Example Sentences */}
 								<div className="mt-4">
