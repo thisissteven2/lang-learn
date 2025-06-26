@@ -19,7 +19,7 @@ function SentencesExamples({ word }: { word: string }) {
 	const { subtitles } = useParsedSubsData(subsData);
 
 	const sentencesExamplesFromSubtitles = useMemo(() => {
-		try {
+		if (word && subtitles && subsTranslations) {
 			const examples = [];
 			for (let i = 0; i < subtitles.length; i++) {
 				if (examples.length === 3) break;
@@ -44,8 +44,7 @@ function SentencesExamples({ word }: { word: string }) {
 				}
 			}
 			return examples;
-		} catch (e) {
-			console.log(e);
+		} else {
 			return [];
 		}
 	}, [subsTranslations, subtitles, word]);
@@ -203,7 +202,7 @@ export function DictEntry({
 
 								<Divider />
 
-								{withExamplesFromSubtitles && word && <SentencesExamples word={word} />}
+								{withExamplesFromSubtitles && <SentencesExamples word={word} />}
 
 								{/* Example Sentences */}
 								<div className="mt-4">
