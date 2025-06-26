@@ -10,13 +10,11 @@ import { getSentenceTransliteration, getTransliteration } from "../../components
 import { posReadableMap } from "../../components/constants";
 import { WordStatusButtons } from "../../components/react/word-status-buttons";
 import { useSubtitleSettings } from "../../provider/subtitle-settings";
-import { useParsedSubsData } from "../hook";
 import { formatTime } from "@/utils/transcripts";
 import { useReactPlayer } from "../../provider/react-player";
 
 function SentencesExamples({ word }: { word: string }) {
-	const { subsData, subsTranslations } = useSubtitleSettings();
-	const { subtitles } = useParsedSubsData(subsData);
+	const { subtitles, subsTranslations } = useSubtitleSettings();
 
 	const sentencesExamplesFromSubtitles = useMemo(() => {
 		if (word && subtitles && subsTranslations) {

@@ -6,6 +6,7 @@ import { getYoutubeSubsData, getYoutubeSubsTranslations } from "@/utils/cdn";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
 import { createContext, useContext } from "react";
+import { useParsedSubsData } from "../components/hook";
 
 type ColorBy = "none" | "pos" | "freq";
 type ColorMode = "text" | "underline";
@@ -30,6 +31,7 @@ interface SubtitleSettingsContextType {
 	subsTranslations: any;
 	isLoading: boolean;
 	isError: boolean;
+	subtitles: ReturnType<typeof useParsedSubsData>["subtitles"];
 }
 
 const SubtitleSettingsContext = createContext<SubtitleSettingsContextType | undefined>(undefined);
@@ -66,6 +68,8 @@ export const SubtitleSettingsProvider: React.FC<{ children: React.ReactNode }> =
 		enabled: typeof videoId === "string" && !!videoId,
 	});
 
+	const { subtitles } = useParsedSubsData(subsData);
+
 	return (
 		<SubtitleSettingsContext.Provider
 			value={{
@@ -87,6 +91,7 @@ export const SubtitleSettingsProvider: React.FC<{ children: React.ReactNode }> =
 				subsTranslations: subsTranslations?.data,
 				isError: isSubsDataError || isSubsTranslationsError,
 				isLoading: isSubsDataLoading && isSubsTranslationsLoading,
+				subtitles,
 			}}
 		>
 			{children}
