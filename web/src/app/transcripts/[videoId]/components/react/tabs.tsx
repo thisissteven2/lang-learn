@@ -11,6 +11,7 @@ import { useParsedSubsData } from "../hook";
 import { useDictEntry } from "../../provider/dict-entry";
 import { useSearchParams } from "next/navigation";
 import { LockWindowScroll } from "./lock-window-scroll";
+import { CopyButton } from "./copy-button";
 
 type SubtitleTabsProps = {
 	getCurrentTime: () => number | null;
@@ -130,18 +131,19 @@ export function SubtitleTabs({ getCurrentTime, onTimestampClick, setPlaying }: S
 							key={i}
 							ref={i === activeIndex ? activeRef : null}
 							className={cx(
-								"subtitle p-2 xl:rounded cursor-pointer transition-colors",
+								"relative subtitle p-2 xl:rounded cursor-pointer transition-colors",
 								i === activeIndex
 									? "bg-blue-50 dark:bg-blue-800/30"
 									: "hover:bg-gray-200 dark:hover:bg-gray-800 opacity-50"
 							)}
 						>
+							<CopyButton text={`${sub.text}\n${subsTranslations?.[i]}`} />
 							<Button onClick={() => onTimestampClick(sub.begin)} variant="light" className="text-sm">
 								{formatTime(sub.begin)}
 							</Button>
 
 							{/* Tokens */}
-							<div className="text-xl flex flex-wrap gap-1">
+							<div className="text-xl flex flex-wrap gap-1 pr-8">
 								{sub.tokens.map((token, j: number) => {
 									const key = colorBy === "pos" ? token.pos : getFreqRangeLabel(token.freq, ranges) ?? "unknown";
 									const colorClass = getColorClass(key, useUnderline, colorBy === "pos" ? posColorMap : freqColorMap);

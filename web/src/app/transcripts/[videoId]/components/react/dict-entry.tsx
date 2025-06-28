@@ -12,6 +12,7 @@ import { WordStatusButtons } from "../../components/react/word-status-buttons";
 import { useSubtitleSettings } from "../../provider/subtitle-settings";
 import { formatTime } from "@/utils/transcripts";
 import { useReactPlayer } from "../../provider/react-player";
+import { CopyButton } from "./copy-button";
 
 function SentencesExamples({ word }: { word: string }) {
 	const { subtitles, subsTranslations } = useSubtitleSettings();
@@ -63,8 +64,12 @@ function SentencesExamples({ word }: { word: string }) {
 						return (
 							<Card
 								key={index}
-								className="bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
+								className="relative bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
 							>
+								<CopyButton
+									className="-bottom-16 right-3 top-0"
+									text={`${word}: \n\n${sentence.text}\n${sentence.translation}\n- - - - -\n`}
+								/>
 								<Button
 									onClick={() => onTimestampClick(sentence.begin, sentence.end)}
 									variant="light"
@@ -85,7 +90,7 @@ function SentencesExamples({ word }: { word: string }) {
 									</Text>
 								</div>
 								<Text className="text-gray-500 dark:text-gray-400 italic">{sentence.transliteration}</Text>
-								<Text className="text-blue-800 dark:text-blue-400 mt-2">{sentence.translation}</Text>
+								<Text className="text-blue-800 pr-8 dark:text-blue-400 mt-2">{sentence.translation}</Text>
 							</Card>
 						);
 					})}
@@ -222,8 +227,12 @@ export function DictEntry({
 														return (
 															<Card
 																key={index}
-																className="bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
+																className="relative bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
 															>
+																<CopyButton
+																	text={`${word}: \n\n${example.text}\n${example.translation?.text}\n- - - - -\n`}
+																	className="-bottom-16 right-3 top-0"
+																/>
 																<div className="flex justify-between items-center">
 																	<Text className="text-black dark:text-white text-xl">
 																		{example.nlp.map((token: any, index: number) => {
@@ -250,7 +259,7 @@ export function DictEntry({
 																	</Button>
 																</div>
 																<Text className="text-gray-500 dark:text-gray-400 italic">{transliteration}</Text>
-																<Text className="text-blue-800 dark:text-blue-400 mt-2">
+																<Text className="text-blue-800 pr-8 dark:text-blue-400 mt-2">
 																	{example.translation?.text}
 																</Text>
 																<Text className="text-xs text-gray-500 mt-1">
