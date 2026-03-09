@@ -229,10 +229,6 @@ export function DictEntry({
 																key={index}
 																className="relative bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 mb-2"
 															>
-																<CopyButton
-																	text={`${word}: \n\n${example.text}\n${example.translation?.text}\n- - - - -\n`}
-																	className="-bottom-16 right-3 top-0"
-																/>
 																<div className="flex justify-between items-center">
 																	<Text className="text-black dark:text-white text-xl">
 																		{example.nlp.map((token: any, index: number) => {
@@ -247,16 +243,6 @@ export function DictEntry({
 																			);
 																		})}
 																	</Text>
-																	<Button
-																		variant="light"
-																		className="text-gray-500 hover:text-blue-600"
-																		onClick={() => {
-																			setSentenceParams(sentenceParams);
-																			playSentence();
-																		}}
-																	>
-																		<RiVolumeUpLine className="w-6 h-6" />
-																	</Button>
 																</div>
 																<Text className="text-gray-500 dark:text-gray-400 italic">{transliteration}</Text>
 																<Text className="text-blue-800 pr-8 dark:text-blue-400 mt-2">
@@ -265,6 +251,22 @@ export function DictEntry({
 																<Text className="text-xs text-gray-500 mt-1">
 																	Frequency Rank: {example.avgFreqRank}
 																</Text>
+																<div className="mt-4 flex gap-4">
+								                                  <CopyButton
+								                                    text={`${word}: \n\n${example.text}\n${example.translation?.text}\n- - - - -\n`}
+								                                    className="relative right-0"
+								                                  />
+																	<Button
+																		variant="light"
+																		className="text-gray-500 hover:text-blue-600 opacity-50 active:opacity-100"
+																		onClick={() => {
+																			setSentenceParams(sentenceParams);
+																			playSentence();
+																		}}
+																	>
+																		<RiVolumeUpLine className="w-6 h-6" />
+																	</Button>
+								                                </div>
 															</Card>
 														);
 													})}
@@ -279,3 +281,4 @@ export function DictEntry({
 		</Drawer.Root>
 	);
 }
+
